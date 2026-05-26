@@ -388,6 +388,36 @@ section.page-content {
     border-radius: 1px;
 }
 
+.coming-soon-poster {
+    border: 1px solid var(--gray-200);
+    background: var(--gray-100);
+    padding: clamp(2.2rem, 5vw, 4rem);
+    text-align: center;
+}
+
+.coming-soon-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    display: inline-block;
+    margin-bottom: 0.9rem;
+}
+
+.coming-soon-title {
+    font-size: clamp(2.4rem, 8vw, 5rem);
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    line-height: 1;
+}
+
+.coming-soon-sub {
+    margin-top: 1rem;
+    color: var(--gray-600);
+    font-size: 0.95rem;
+}
+
 /* Portfolio */
 #portfolio { background: var(--gray-100); }
 
@@ -677,64 +707,115 @@ section.page-content {
     font-weight: 400;
 }
 
-.client-template {
-    padding: 2.25rem;
+/* Client Card redesign */
+.client-card {
+    position: relative;
+    background: var(--white);
     border: 1px solid var(--gray-200);
-}
-
-.client-header-row {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s;
+    cursor: none;
+}
+.client-card:hover {
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+.client-card-accent {
+    width: 4px;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, var(--black) 0%, var(--gray-400) 100%);
+}
+.client-card-body {
+    flex: 1;
+    padding: 2.5rem 2.75rem;
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
 }
-
-.client-rating {
+.client-card-top {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+.client-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--black);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+}
+.client-id {
+    flex: 1;
+}
+.client-rating-block {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 0.3rem;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--gray-400);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    gap: 0.2rem;
+    margin-left: auto;
 }
-
-.client-rating strong {
-    font-family: var(--font-display);
-    font-size: 1.1rem;
+.client-stars {
+    color: #c8a96e;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+}
+.client-score {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    font-weight: 700;
     color: var(--black);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+.client-quote {
+    font-size: 1rem;
+    color: var(--gray-600);
+    line-height: 1.75;
+    font-style: italic;
+    font-weight: 400;
+    border-left: 2px solid var(--gray-200);
+    padding-left: 1.25rem;
+    margin: 0;
 }
 
 .client-details {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 200px));
+    gap: 0.75rem;
+    margin-top: 0.25rem;
 }
 
 .client-detail {
-    padding: 1rem;
+    padding: 0.9rem 1.1rem;
     border: 1px solid var(--gray-200);
     background: var(--gray-100);
+    transition: border-color 0.2s;
 }
+.client-detail:hover { border-color: var(--gray-400); }
 
 .client-label {
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     color: var(--gray-400);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: 0.45rem;
+    margin-bottom: 0.4rem;
 }
 
 .client-link {
     color: var(--black);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 600;
     word-break: break-word;
 }
@@ -1335,16 +1416,20 @@ footer {
         padding: 1rem;
     }
 
-    .client-template {
-        padding: 1.4rem;
+    .client-card-body {
+        padding: 1.5rem 1.25rem;
     }
 
-    .client-header-row {
-        flex-direction: column;
+    .client-card-top {
+        flex-wrap: wrap;
     }
 
-    .client-rating {
+    .client-rating-block {
         align-items: flex-start;
+        margin-left: 0;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .client-details {
@@ -1354,4 +1439,9 @@ footer {
     .faq-item h4 {
         font-size: 0.9rem;
     }
+}
+
+/* Ocultar produtos por enquanto */
+.hidden-menu {
+    display: none !important;
 }
