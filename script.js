@@ -92,7 +92,7 @@ if (navToggle && navbar && navLinks) {
 
     navLinks.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
-            if (window.innerWidth <= 900) {
+            if (window.innerWidth <= 1024) {
                 navbar.classList.remove('nav-open');
                 navToggle.setAttribute('aria-expanded', 'false');
                 navToggle.textContent = '☰';
@@ -101,7 +101,7 @@ if (navToggle && navbar && navLinks) {
     });
 
     window.addEventListener('resize', () => {
-        if (window.innerWidth > 900) {
+        if (window.innerWidth > 1024) {
             navbar.classList.remove('nav-open');
             navToggle.setAttribute('aria-expanded', 'false');
             navToggle.textContent = '☰';

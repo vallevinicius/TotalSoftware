@@ -8,11 +8,46 @@
     --gray-400: #999;
     --gray-600: #555;
     --accent: #0a0a0a;
+    --scroll-track: #f3f3f3;
+    --scroll-thumb: #1f1f1f;
+    --scroll-thumb-hover: #0a0a0a;
     --font-display: 'Syne', sans-serif;
     --font-mono: 'DM Mono', monospace;
 }
 
 html { scroll-behavior: smooth; }
+
+html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #2a2a2a 0%, var(--scroll-thumb) 100%);
+    border-radius: 999px;
+    border: 3px solid var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #1a1a1a 0%, var(--scroll-thumb-hover) 100%);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: var(--scroll-thumb-hover);
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--scroll-track);
+}
 
 body {
     font-family: var(--font-display);
@@ -1310,7 +1345,22 @@ footer {
 /* Mobile hamburger */
 .nav-toggle { display: none; }
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
+    nav { padding: 1.2rem 2rem; }
+    .nav-links { gap: 1.5rem; }
+    .nav-links a { font-size: 0.75rem; letter-spacing: 0.06em; }
+    .nav-cta { padding: 0.5rem 1rem; }
+
+    .hero {
+        padding: 7rem 2rem 3.5rem;
+        min-height: 92vh;
+    }
+    .hero-title { font-size: clamp(3rem, 8vw, 6.2rem); }
+    .hero-desc { max-width: 340px; }
+    section { padding: 5.5rem 2rem; }
+}
+
+@media (max-width: 1024px) {
     nav { padding: 1.2rem 1.5rem; }
     .nav-links {
         display: none;
