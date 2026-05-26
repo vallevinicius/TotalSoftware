@@ -23,6 +23,7 @@
       <li><a href="servicos.html">Serviços</a></li>
       <li><a href="produtos.html">Produtos</a></li>
       <li><a href="valores.html">Valores</a></li>
+      <li><a href="clientes.html">Clientes</a></li>
       <li><a href="equipe.html">Equipe</a></li>
       <li><a href="fale-conosco.html" class="nav-cta">Fale Conosco</a></li>
     </ul>
@@ -58,14 +59,15 @@
           <li><span class="check">✗</span> Analytics avançado</li>
           <li><span class="check">✗</span> Suporte contínuo</li>
         </ul>
-        <button class="pricing-btn">Solicitar proposta</button>
+        <p class="pricing-note"><em>Suporte mensal disponível mediante pagamento de mensalidade definida na conversa com o especialista.</em></p>
+        <button class="pricing-btn" data-plan="Início Rápido">Solicitar proposta</button>
       </div>
 
       <!-- Site Pro -->
       <div class="pricing-card reveal featured" style="transition-delay: 0.1s">
         <div class="pricing-badge">MAIS PEDIDO</div>
         <div class="pricing-header">
-          <h3 class="pricing-title">Site Pro</h3>
+          <h3 class="pricing-title">Site Profissional</h3>
           <p class="pricing-desc">Site completo para sua marca</p>
         </div>
         <div class="pricing-price">
@@ -80,7 +82,8 @@
           <li><span class="check">✓</span> Suporte básico</li>
           <li><span class="check">✗</span> E-commerce</li>
         </ul>
-        <button class="pricing-btn btn-primary">Solicitar proposta</button>
+        <p class="pricing-note"><em>Suporte mensal disponível mediante pagamento de mensalidade definida na conversa com o especialista.</em></p>
+        <button class="pricing-btn btn-primary" data-plan="Site Pro">Solicitar proposta</button>
       </div>
 
       <!-- Loja -->
@@ -102,7 +105,8 @@
           <li><span class="check">✓</span> Analytics vendas</li>
           <li><span class="check">✓</span> Suporte por 1 mês</li>
         </ul>
-        <button class="pricing-btn">Solicitar proposta</button>
+        <p class="pricing-note"><em>Suporte mensal disponível mediante pagamento de mensalidade definida na conversa com o especialista.</em></p>
+        <button class="pricing-btn" data-plan="Loja">Solicitar proposta</button>
       </div>
 
       <!-- Sistema Inicial / MVP SaaS -->
@@ -123,7 +127,8 @@
           <li><span class="check">✓</span> Deploy incluído</li>
           <li><span class="check">✓</span> Suporte por 3 meses</li>
         </ul>
-        <button class="pricing-btn btn-primary">Solicitar proposta</button>
+        <p class="pricing-note"><em>Suporte mensal disponível mediante pagamento de mensalidade definida na conversa com o especialista.</em></p>
+        <button class="pricing-btn btn-primary" data-plan="Sistema Inicial">Solicitar proposta</button>
       </div>
 
       <!-- Projeto Sob Medida -->
@@ -144,7 +149,8 @@
           <li><span class="check">✓</span> Relatórios detalhados</li>
           <li><span class="check">✓</span> Manutenção contínua</li>
         </ul>
-        <button class="pricing-btn">Solicitar proposta</button>
+        <p class="pricing-note"><em>Suporte mensal disponível mediante pagamento de mensalidade definida na conversa com o especialista.</em></p>
+        <button class="pricing-btn" data-plan="Projeto Sob Medida">Solicitar proposta</button>
       </div>
 
       <!-- Algo Diferente -->
@@ -158,7 +164,8 @@
           <button class="custom-option">Prioridades e fases definidas</button>
           <button class="custom-option">Proposta alinhada ao seu momento</button>
         </div>
-        <button class="pricing-btn btn-primary">Falar com especialista</button>
+        <p class="pricing-note"><em>Suporte mensal disponível mediante pagamento de mensalidade definida na conversa com o especialista.</em></p>
+        <button class="pricing-btn btn-primary" data-plan="Projeto Customizado">Falar com especialista</button>
       </div>
     </div>
 
@@ -182,6 +189,10 @@
           <h4>Inclui suporte após entrega?</h4>
           <p>Sim, cada plano inclui suporte. Sistema Inicial vem com 3 meses. Depois oferecemos pacotes de manutenção.</p>
         </div>
+        <div class="faq-item">
+          <h4>E o suporte contínuo?</h4>
+          <p>Suporte mensal mediante ao pagamento de mensalidade definida na conversa com o especialista. Podemos adequar ao melhor plano para sua necessidade.</p>
+        </div>
       </div>
     </div>
 
@@ -199,6 +210,7 @@
         <li><a href="servicos.html">Serviços</a></li>
         <li><a href="produtos.html">Produtos</a></li>
         <li><a href="valores.html">Valores</a></li>
+        <li><a href="clientes.html">Clientes</a></li>
         <li><a href="equipe.html">Equipe</a></li>
         <li><a href="fale-conosco.html">Fale Conosco</a></li>
         <li><a href="mailto:contato@totalsoftware.com.br">contato@totalsoftware.com.br</a></li>
@@ -211,5 +223,18 @@
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    // Funcionalidade de WhatsApp para botões de proposta
+    document.querySelectorAll('[data-plan]').forEach(button => {
+      button.addEventListener('click', () => {
+        const planName = button.getAttribute('data-plan');
+        const phoneNumber = '5522999447646'; // Número sem símbolos
+        const message = `Olá! Gostaria de solicitar uma proposta para o plano: ${planName}`;
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+        window.open(whatsappUrl, '_blank');
+      });
+    });
+  </script>
 </body>
 </html>

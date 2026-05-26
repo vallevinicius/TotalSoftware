@@ -1055,6 +1055,17 @@ footer {
     opacity: 0.5;
 }
 
+.pricing-note {
+    font-size: 0.85rem;
+    color: var(--gray-600);
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--gray-100);
+    border-left: 3px solid var(--black);
+    border-radius: 0.25rem;
+    line-height: 1.5;
+}
+
 .pricing-btn {
     width: 100%;
     padding: 1rem;
