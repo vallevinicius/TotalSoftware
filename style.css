@@ -840,7 +840,7 @@ section.page-content {
 
 .team-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(260px, 360px));
+    grid-template-columns: repeat(3, minmax(220px, 320px));
     gap: 1.5rem;
     justify-content: center;
     margin: 0 auto;
