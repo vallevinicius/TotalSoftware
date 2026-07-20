@@ -1145,6 +1145,10 @@ footer {
     font-weight: 400;
 }
 
+.price-value.price-quote {
+    font-size: 1.5rem;
+}
+
 .pricing-features {
     list-style: none;
     margin-bottom: 2rem;
