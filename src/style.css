@@ -287,6 +287,12 @@ section.page-content {
     display: flex; align-items: flex-start; gap: 3rem;
     margin-bottom: 5rem;
 }
+.section-header.centered {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+}
 .section-number {
     font-family: var(--font-mono);
     font-size: 0.7rem;
@@ -484,20 +490,21 @@ section.page-content {
 .portfolio-card.large .portfolio-visual { height: 360px; }
 
 .portfolio-visual-logo {
-    background: linear-gradient(135deg, #0f172a, #1e293b);
+    background: linear-gradient(135deg, #0a0a0a 0%, #2c2c2c 100%);
     flex-direction: column;
     gap: 1rem;
 }
 
 .portfolio-visual-ods {
-    background:
-        radial-gradient(circle at 50% 35%, rgba(56, 189, 248, 0.18), transparent 32%),
-        radial-gradient(circle at 80% 15%, rgba(34, 197, 94, 0.16), transparent 24%),
-        linear-gradient(135deg, #07111f 0%, #0c1b31 48%, #111827 100%);
+    background: linear-gradient(135deg, #0a0a0a 0%, #2c2c2c 100%);
 }
 
 .portfolio-visual-mei {
-    background: linear-gradient(135deg, #0f172a, #0b0f19 55%, #1f2937);
+    background: linear-gradient(135deg, #0a0a0a 0%, #3a3a3a 100%);
+}
+
+.portfolio-visual-pousada {
+    background: linear-gradient(135deg, #0a0a0a 0%, #454545 100%);
 }
 
 .portfolio-logo-image {
@@ -667,12 +674,12 @@ section.page-content {
 }
 
 /* Portfolio detail (case study) */
-.portfolio-detail-hero {
+.detail-page-hero {
     position: relative;
     min-height: 220vh;
     background: var(--gray-100);
 }
-.portfolio-detail-hero-inner {
+.detail-page-hero-inner {
     position: sticky;
     top: 0;
     min-height: 100vh;
@@ -684,7 +691,7 @@ section.page-content {
     text-align: center;
     padding: 6rem 2rem;
 }
-.portfolio-detail-back {
+.detail-page-back {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     letter-spacing: 0.1em;
@@ -693,8 +700,8 @@ section.page-content {
     text-decoration: none;
     transition: color 0.2s ease;
 }
-.portfolio-detail-back:hover { color: var(--black); }
-.portfolio-detail-title {
+.detail-page-back:hover { color: var(--black); }
+.detail-page-title {
     position: relative;
     z-index: 1;
     font-size: clamp(2.4rem, 6vw, 5.5rem);
@@ -703,7 +710,7 @@ section.page-content {
     line-height: 1.05;
     max-width: 900px;
 }
-.portfolio-detail-sub {
+.detail-page-sub {
     position: relative;
     z-index: 1;
     font-family: var(--font-mono);
@@ -712,7 +719,7 @@ section.page-content {
     text-transform: uppercase;
     color: var(--gray-400);
 }
-.portfolio-detail-line {
+.detail-page-line {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -723,20 +730,20 @@ section.page-content {
     pointer-events: none;
 }
 
-.portfolio-detail-panel {
+.detail-page-panel {
     background: var(--black);
     color: var(--white);
     padding: 5rem 2rem 4rem;
     text-align: center;
 }
-.portfolio-detail-giant {
+.detail-page-giant {
     font-size: clamp(2.6rem, 10vw, 7rem);
     font-weight: 800;
     letter-spacing: -0.03em;
     line-height: 1;
     word-break: break-word;
 }
-.portfolio-detail-info {
+.detail-page-info {
     max-width: 900px;
     margin: 3.5rem auto 0;
     display: grid;
@@ -745,21 +752,21 @@ section.page-content {
     background: #222;
     border: 1px solid #222;
 }
-.portfolio-detail-info-cell {
+.detail-page-info-cell {
     background: var(--black);
     padding: 1.5rem 1.25rem;
     text-align: left;
 }
-.portfolio-detail-info-cell p,
-.portfolio-detail-info-cell a {
+.detail-page-info-cell p,
+.detail-page-info-cell a {
     color: var(--white);
     font-size: 0.95rem;
     font-weight: 600;
     text-decoration: none;
     word-break: break-word;
 }
-.portfolio-detail-info-cell a:hover { text-decoration: underline; }
-.portfolio-detail-label {
+.detail-page-info-cell a:hover { text-decoration: underline; }
+.detail-page-label {
     display: block;
     font-family: var(--font-mono);
     font-size: 0.65rem;
@@ -774,13 +781,130 @@ section.page-content {
     background: var(--gray-200);
 }
 
-.portfolio-detail-cta {
+.detail-page-cta {
     margin-top: 3.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 2rem;
     flex-wrap: wrap;
+}
+
+.detail-page-about {
+    max-width: 720px;
+}
+.detail-page-about.centered {
+    margin: 0 auto;
+    text-align: center;
+}
+.detail-page-about-text {
+    font-size: 1rem;
+    color: var(--gray-600);
+    line-height: 1.8;
+}
+.detail-page-highlights {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
+}
+.detail-page-about.centered .detail-page-highlights {
+    justify-content: center;
+}
+
+.product-feature-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+.product-feature-card {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    padding: 1.1rem 1.4rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.product-feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 32px rgba(10,10,10,0.08);
+    border-color: var(--gray-400);
+}
+.product-feature-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--black);
+    flex-shrink: 0;
+}
+
+/* Total Pousada brand theme (SaaS colors) */
+.theme-pousada {
+    --black: #1e293b;
+    --white: #f8fafc;
+    --gray-100: #eef2ff;
+    --gray-200: rgba(203, 213, 225, 0.9);
+    --gray-400: #64748b;
+    --gray-600: #475569;
+}
+.theme-pousada .detail-page-hero {
+    background-color: #f8fafc;
+    background-image:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 35%),
+        radial-gradient(circle at top right, rgba(16, 185, 129, 0.1), transparent 30%);
+}
+.theme-pousada .detail-page-panel {
+    background-color: #020617;
+    background-image:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.22), transparent 30%),
+        radial-gradient(circle at top right, rgba(16, 185, 129, 0.16), transparent 20%),
+        linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 1));
+    color: #f1f5f9;
+}
+.theme-pousada .detail-page-info {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+.theme-pousada .detail-page-info-cell {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+}
+.theme-pousada .detail-page-info-cell p,
+.theme-pousada .detail-page-info-cell a {
+    color: #f1f5f9;
+}
+.theme-pousada .detail-page-label {
+    color: rgba(241, 245, 249, 0.5);
+}
+.theme-pousada section {
+    background-color: #f8fafc;
+    background-image:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 35%),
+        radial-gradient(circle at top right, rgba(16, 185, 129, 0.06), transparent 30%);
+}
+.theme-pousada .product-feature-card {
+    background: rgba(255, 255, 255, 0.75);
+    border-color: rgba(203, 213, 225, 0.9);
+    backdrop-filter: blur(12px);
+}
+.theme-pousada .product-feature-icon {
+    color: #3b82f6;
+}
+.theme-pousada .portfolio-link {
+    border-color: #1e293b;
+}
+.theme-pousada .portfolio-link:hover {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+.theme-pousada .detail-page-back:hover {
+    color: #3b82f6;
 }
 
 .tag {
@@ -1350,8 +1474,9 @@ footer {
     .services-grid { grid-template-columns: 1fr; }
     .portfolio-grid { grid-template-columns: 1fr; }
     .portfolio-card.large { grid-column: span 1; }
-    .portfolio-detail-hero { min-height: 160vh; }
-    .portfolio-detail-info { grid-template-columns: repeat(2, 1fr); }
+    .detail-page-hero { min-height: 160vh; }
+    .detail-page-info { grid-template-columns: repeat(2, 1fr); }
+    .product-feature-grid { grid-template-columns: 1fr; }
     .team-grid { grid-template-columns: repeat(2, 1fr); }
     .contact-grid { grid-template-columns: 1fr; }
     .hero-stats { grid-template-columns: repeat(2, 1fr); }

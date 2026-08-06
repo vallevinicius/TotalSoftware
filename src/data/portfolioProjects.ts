@@ -10,6 +10,8 @@ export interface PortfolioProject {
   giantLabel: string
   caption: string
   description: string
+  about: string
+  highlights: string[]
   award: string
   tags: string[]
   href: string
@@ -30,6 +32,9 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     caption: 'AquiTemODS • Agenda 2030',
     description:
       'Vitrine de políticas públicas da Agenda 2030, com categorias ODS, projetos em destaque e participação cidadã.',
+    about:
+      'O AquiTemODS é o portal da Prefeitura de Saquarema dedicado à Agenda 2030, reunindo os 17 Objetivos de Desenvolvimento Sustentável em um só lugar. O site organiza projetos e políticas públicas por ODS, com busca, cadastro de novas iniciativas e uma seção educativa para engajar a população nos temas de sustentabilidade.',
+    highlights: ['Busca por ODS', 'Cadastro de projetos', 'Espaço dos ODS', 'SustentAí', 'Enigmas do Futuro (gamificação)', 'FAQ'],
     award: 'Vice-Campeão do Prêmio SEBRAE de Inovação Digital na categoria Prefeitura Inovadora 2026',
     tags: ['Portal Institucional', 'Agenda 2030', 'Saquarema'],
     href: 'https://aquitemods.saquarema.rj.gov.br/',
@@ -42,12 +47,15 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     category: 'Vitrine Digital',
     year: '2025',
     visualClassName: 'portfolio-visual-mei',
-    badge: 'MEIs',
-    wordmark: 'de Saquarema',
+    badge: 'Vitrine Virtual',
+    wordmark: 'MEIdeSaquá',
     giantLabel: 'MEIdeSaquá',
     caption: 'Vitrine digital do empreendedor local',
     description:
       'Vitrine digital para empreendedores locais, com categorias de negócios, cadastro e fortalecimento da economia regional.',
+    about:
+      'O MEIdeSaquá é a vitrine digital dos microempreendedores individuais de Saquarema, criada pela Prefeitura para fortalecer o comércio local. Empreendedores se cadastram por categoria — de artesanato a construção — e moradores encontram negócios da cidade organizados por segmento, com busca e uma central de dúvidas.',
+    highlights: ['Cadastro de MEIs', 'Busca por categoria', 'Espaço MEI', 'Artesanato, moda, comércio e mais', 'FAQ'],
     award: 'Campeão do Prêmio SEBRAE de Inovação Digital na categoria Sala do empreendedor 2026',
     tags: ['Vitrine Digital', 'Empreendedorismo', 'Saquarema'],
     href: 'https://meidesaqua.saquarema.rj.gov.br/',

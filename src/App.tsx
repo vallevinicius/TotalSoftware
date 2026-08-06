@@ -5,6 +5,7 @@ import Portfolio from './pages/Portfolio'
 import PortfolioDetail from './pages/PortfolioDetail'
 import Servicos from './pages/Servicos'
 import Produtos from './pages/Produtos'
+import ProdutoDetail from './pages/ProdutoDetail'
 import Valores from './pages/Valores'
 import Clientes from './pages/Clientes'
 import Equipe from './pages/Equipe'
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="portfolio/:slug" element={<PortfolioDetail />} />
         <Route path="servicos" element={<Servicos />} />
         <Route path="produtos" element={<Produtos />} />
+        <Route path="produtos/:slug" element={<ProdutoDetail />} />
         <Route path="valores" element={<Valores />} />
         <Route path="clientes" element={<Clientes />} />
         <Route path="equipe" element={<Equipe />} />
