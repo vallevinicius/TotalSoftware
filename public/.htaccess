@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Serve arquivos e diretórios reais normalmente (assets do build)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Todas as demais rotas caem no index.html (SPA - React Router)
+RewriteRule ^ index.html [L]
