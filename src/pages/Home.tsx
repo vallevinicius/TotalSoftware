@@ -1,5 +1,13 @@
+import { CalendarDays, CheckCircle2, Star, Users } from 'lucide-react'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { FluidParticlesBackground } from '../components/ui/fluid-particles-background'
+
+const STATS = [
+  { icon: CalendarDays, num: '3+', label: 'Anos de experiência' },
+  { icon: CheckCircle2, num: '20+', label: 'Projetos entregues' },
+  { icon: Users, num: '10+', label: 'Clientes ativos' },
+  { icon: Star, num: '98%', label: 'Satisfação' },
+]
 
 export default function Home() {
   useDocumentTitle('Total Software | Technology & Software Solutions')
@@ -29,31 +37,18 @@ export default function Home() {
             Desenvolvemos soluções tecnológicas que impulsionam o crescimento das empresas. Da concepção ao
             deploy, com excelência em cada linha de código.
           </p>
-          <div className="hero-counter">
-            <strong>20+</strong>
-            projetos entregues
-          </div>
+        </div>
+
+        <div className="hero-stats">
+          {STATS.map((stat, index) => (
+            <div className="hero-stat-card reveal" style={{ transitionDelay: `${index * 0.1}s` }} key={stat.label}>
+              <stat.icon className="hero-stat-icon" strokeWidth={1.75} />
+              <div className="hero-stat-num">{stat.num}</div>
+              <div className="hero-stat-label">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </section>
-
-      <div className="stats-bar">
-        <div className="stat-cell reveal">
-          <div className="stat-num">3+</div>
-          <div className="stat-label">Anos de experiência</div>
-        </div>
-        <div className="stat-cell reveal" style={{ transitionDelay: '0.1s' }}>
-          <div className="stat-num">20+</div>
-          <div className="stat-label">Projetos entregues</div>
-        </div>
-        <div className="stat-cell reveal" style={{ transitionDelay: '0.2s' }}>
-          <div className="stat-num">10+</div>
-          <div className="stat-label">Clientes ativos</div>
-        </div>
-        <div className="stat-cell reveal" style={{ transitionDelay: '0.3s' }}>
-          <div className="stat-num">98%</div>
-          <div className="stat-label">Satisfação</div>
-        </div>
-      </div>
     </>
   )
 }
