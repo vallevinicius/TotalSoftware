@@ -5,6 +5,8 @@ import { CheckCircle2 } from 'lucide-react'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { getProductBySlug } from '../data/produtos'
 import { ScrollLinePath } from '../components/ui/scroll-line-path'
+import { PricingSection } from '../components/ui/pricing'
+import AnimatedGradient from '../components/ui/animated-gradient'
 
 export default function ProdutoDetail() {
   const { slug } = useParams()
@@ -23,6 +25,13 @@ export default function ProdutoDetail() {
 
   return (
     <article className={`detail-page ${product.themeClassName ?? ''}`}>
+      {product.gradientConfig && (
+        <AnimatedGradient
+          config={product.gradientConfig}
+          noise={{ opacity: 12, scale: 1 }}
+          style={{ position: 'fixed', zIndex: -1 }}
+        />
+      )}
       <section ref={heroRef} className="detail-page-hero">
         <div className="detail-page-hero-inner">
           <Link to="/produtos" className="detail-page-back">
@@ -87,6 +96,20 @@ export default function ProdutoDetail() {
             </div>
           ))}
         </div>
+      </section>
+
+      {product.pricingPlans && (
+        <section style={{ paddingTop: '2rem', paddingBottom: '5rem' }}>
+          <PricingSection
+            plans={product.pricingPlans}
+            title="Planos e preços"
+            description={`Escolha o plano ideal para a sua pousada.`}
+            accentColor={product.accentColor}
+          />
+        </section>
+      )}
+
+      <section style={{ paddingTop: '1rem', paddingBottom: '7rem' }}>
         <div className="detail-page-cta">
           <Link className="portfolio-link" to="/fale-conosco">
             Quero saber mais

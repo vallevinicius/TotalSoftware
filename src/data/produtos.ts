@@ -1,3 +1,6 @@
+import type { PricingPlan } from '../components/ui/pricing'
+import type { GradientConfig } from '../components/ui/animated-gradient'
+
 export interface Product {
   slug: string
   name: string
@@ -14,6 +17,8 @@ export interface Product {
   techStack: string[]
   themeClassName?: string
   accentColor?: string
+  pricingPlans?: PricingPlan[]
+  gradientConfig?: GradientConfig
 }
 
 export const PRODUCTS: Product[] = [
@@ -44,6 +49,72 @@ export const PRODUCTS: Product[] = [
     techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'MySQL'],
     themeClassName: 'theme-pousada',
     accentColor: '#3b82f6',
+    gradientConfig: {
+      preset: 'custom',
+      color1: '#1e3a8a',
+      color2: '#3b82f6',
+      color3: '#10b981',
+      rotation: 10,
+      proportion: 60,
+      scale: 0.6,
+      speed: 12,
+      distortion: 10,
+      swirl: 45,
+      swirlIterations: 6,
+      softness: 65,
+      offset: 0,
+      shape: 'Checks',
+      shapeSize: 35,
+    },
+    // TODO: preços de exemplo — confirmar valores reais antes de publicar
+    pricingPlans: [
+      {
+        name: 'Essencial',
+        price: '89',
+        yearlyPrice: '71',
+        period: 'mês',
+        description: 'Para pousadas pequenas começando a organizar as reservas.',
+        buttonText: 'Falar com a gente',
+        href: '/fale-conosco',
+        features: [
+          'Controle de reservas',
+          'Calendário de disponibilidade',
+          'Check-in e check-out',
+          'Conta de demonstração',
+        ],
+      },
+      {
+        name: 'Profissional',
+        price: '149',
+        yearlyPrice: '119',
+        period: 'mês',
+        description: 'Para pousadas que querem evitar overbooking e controlar o financeiro.',
+        buttonText: 'Falar com a gente',
+        href: '/fale-conosco',
+        isPopular: true,
+        features: [
+          'Tudo do plano Essencial',
+          'Prevenção de overbooking',
+          'Controle financeiro',
+          'Tarifas sazonais e políticas de estadia',
+        ],
+      },
+      {
+        name: 'Empresarial',
+        price: '249',
+        yearlyPrice: '199',
+        period: 'mês',
+        description: 'Para redes de pousadas com equipe e operação maiores.',
+        buttonText: 'Falar com a gente',
+        href: '/fale-conosco',
+        features: [
+          'Tudo do plano Profissional',
+          'Gestão de equipe e permissões',
+          'Suporte prioritário',
+          'Onboarding dedicado',
+        ],
+      },
+    ],
   },
 ]
 

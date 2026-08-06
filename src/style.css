@@ -12,6 +12,8 @@
     --gray-400: #999;
     --gray-600: #555;
     --accent: #0a0a0a;
+    --card-surface: rgba(255, 255, 255, 0.85);
+    --card-border: rgba(224, 224, 224, 0.9);
     --scroll-track: #f3f3f3;
     --scroll-thumb: #1f1f1f;
     --scroll-thumb-hover: #0a0a0a;
@@ -844,27 +846,28 @@ section.page-content {
     flex-shrink: 0;
 }
 
-/* Total Pousada brand theme (SaaS colors) */
+/* Total Pousada brand theme (SaaS colors, animated WebGL background) */
 .theme-pousada {
-    --black: #1e293b;
+    --black: #f1f5f9;
     --white: #f8fafc;
-    --gray-100: #eef2ff;
-    --gray-200: rgba(203, 213, 225, 0.9);
-    --gray-400: #64748b;
-    --gray-600: #475569;
+    --gray-100: rgba(255, 255, 255, 0.08);
+    --gray-200: rgba(255, 255, 255, 0.16);
+    --gray-400: #94a3b8;
+    --gray-600: #cbd5e1;
+    --card-surface: rgba(15, 23, 42, 0.55);
+    --card-border: rgba(255, 255, 255, 0.14);
+
+    position: relative;
+    color: var(--black);
+    background: transparent;
 }
-.theme-pousada .detail-page-hero {
-    background-color: #f8fafc;
-    background-image:
-        radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 35%),
-        radial-gradient(circle at top right, rgba(16, 185, 129, 0.1), transparent 30%);
+.theme-pousada .detail-page-hero,
+.theme-pousada section {
+    background: transparent;
 }
 .theme-pousada .detail-page-panel {
-    background-color: #020617;
-    background-image:
-        radial-gradient(circle at top left, rgba(59, 130, 246, 0.22), transparent 30%),
-        radial-gradient(circle at top right, rgba(16, 185, 129, 0.16), transparent 20%),
-        linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 1));
+    background: var(--card-surface);
+    backdrop-filter: blur(20px);
     color: #f1f5f9;
 }
 .theme-pousada .detail-page-info {
@@ -882,22 +885,16 @@ section.page-content {
 .theme-pousada .detail-page-label {
     color: rgba(241, 245, 249, 0.5);
 }
-.theme-pousada section {
-    background-color: #f8fafc;
-    background-image:
-        radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 35%),
-        radial-gradient(circle at top right, rgba(16, 185, 129, 0.06), transparent 30%);
-}
 .theme-pousada .product-feature-card {
-    background: rgba(255, 255, 255, 0.75);
-    border-color: rgba(203, 213, 225, 0.9);
+    background: var(--card-surface);
+    border-color: var(--card-border);
     backdrop-filter: blur(12px);
 }
 .theme-pousada .product-feature-icon {
-    color: #3b82f6;
+    color: #60a5fa;
 }
 .theme-pousada .portfolio-link {
-    border-color: #1e293b;
+    border-color: var(--gray-200);
 }
 .theme-pousada .portfolio-link:hover {
     background: #3b82f6;
