@@ -6,7 +6,7 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { getProductBySlug } from '../data/produtos'
 import { ScrollLinePath } from '../components/ui/scroll-line-path'
 import { PricingSection } from '../components/ui/pricing'
-import AnimatedGradient from '../components/ui/animated-gradient'
+import BackgroundGradientSnippet from '../components/ui/background-gradient-snippet'
 
 export default function ProdutoDetail() {
   const { slug } = useParams()
@@ -25,13 +25,7 @@ export default function ProdutoDetail() {
 
   return (
     <article className={`detail-page ${product.themeClassName ?? ''}`}>
-      {product.gradientConfig && (
-        <AnimatedGradient
-          config={product.gradientConfig}
-          noise={{ opacity: 12, scale: 1 }}
-          style={{ position: 'fixed', zIndex: -1 }}
-        />
-      )}
+      {product.themeClassName && <BackgroundGradientSnippet color={product.accentColor} />}
       <section ref={heroRef} className="detail-page-hero">
         <div className="detail-page-hero-inner">
           <Link to="/produtos" className="detail-page-back">

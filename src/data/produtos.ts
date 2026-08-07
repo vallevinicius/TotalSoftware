@@ -1,5 +1,4 @@
 import type { PricingPlan } from '../components/ui/pricing'
-import type { GradientConfig } from '../components/ui/animated-gradient'
 
 export interface Product {
   slug: string
@@ -18,7 +17,6 @@ export interface Product {
   themeClassName?: string
   accentColor?: string
   pricingPlans?: PricingPlan[]
-  gradientConfig?: GradientConfig
 }
 
 export const PRODUCTS: Product[] = [
@@ -49,23 +47,6 @@ export const PRODUCTS: Product[] = [
     techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'MySQL'],
     themeClassName: 'theme-pousada',
     accentColor: '#3b82f6',
-    gradientConfig: {
-      preset: 'custom',
-      color1: '#1e3a8a',
-      color2: '#3b82f6',
-      color3: '#10b981',
-      rotation: 10,
-      proportion: 60,
-      scale: 0.6,
-      speed: 12,
-      distortion: 10,
-      swirl: 45,
-      swirlIterations: 6,
-      softness: 65,
-      offset: 0,
-      shape: 'Checks',
-      shapeSize: 35,
-    },
     // TODO: preços de exemplo — confirmar valores reais antes de publicar
     pricingPlans: [
       {
