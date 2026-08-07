@@ -10,6 +10,8 @@ import Valores from './pages/Valores'
 import Clientes from './pages/Clientes'
 import Equipe from './pages/Equipe'
 import FaleConosco from './pages/FaleConosco'
+import Portal from './pages/Portal'
+import { PortalAuthProvider } from './hooks/usePortalAuth'
 
 export default function App() {
   return (
@@ -25,6 +27,14 @@ export default function App() {
         <Route path="clientes" element={<Clientes />} />
         <Route path="equipe" element={<Equipe />} />
         <Route path="fale-conosco" element={<FaleConosco />} />
+        <Route
+          path="portal"
+          element={
+            <PortalAuthProvider>
+              <Portal />
+            </PortalAuthProvider>
+          }
+        />
       </Route>
     </Routes>
   )

@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { to: '/clientes', label: 'Clientes' },
   { to: '/equipe', label: 'Equipe' },
   { to: '/fale-conosco', label: 'Fale Conosco' },
+  { to: '/portal', label: 'Já sou cliente' },
 ]
 
 export default function Navbar() {
