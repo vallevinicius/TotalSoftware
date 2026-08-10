@@ -15,6 +15,12 @@ export interface PortalMensalidade {
   pagoEm: string | null
 }
 
+export interface PortalAssinatura {
+  ativa: boolean
+  status: string
+  proximaCobranca: string | null
+}
+
 export interface PortalEstabelecimento {
   id: number
   nome: string
@@ -23,6 +29,7 @@ export interface PortalEstabelecimento {
   status: 'ativa' | 'inativa' | 'pendente'
   mensalidadeAtual: PortalMensalidade | null
   mensalidades: PortalMensalidade[]
+  assinatura: PortalAssinatura | null
 }
 
 export interface PortalProduto {
@@ -80,6 +87,36 @@ export async function portalMe(token: string): Promise<PortalMeResponse> {
   if (!response.ok) {
     throw new PortalApiError(
       await parseError(response, 'Não foi possível carregar seus dados.'),
+    )
+  }
+  return response.json()
+}
+
+export async function createPagamentoCheckoutSession(
+  token: string,
+  estabelecimentoId: number,
+): Promise<{ url: string }> {
+  const response = await fetch(`${requireApiUrl()}/api/portal/pagamento/checkout-session`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ estabelecimentoId }),
+  })
+  if (!response.ok) {
+    throw new PortalApiError(
+      await parseError(response, 'Não foi possível iniciar o pagamento.'),
+    )
+  }
+  return response.json()
+}
+
+export async function createPagamentoPortalSession(token: string): Promise<{ url: string }> {
+  const response = await fetch(`${requireApiUrl()}/api/portal/pagamento/portal-session`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  if (!response.ok) {
+    throw new PortalApiError(
+      await parseError(response, 'Não foi possível abrir o gerenciamento de pagamento.'),
     )
   }
   return response.json()

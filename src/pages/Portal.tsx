@@ -1,7 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { usePortalAuth } from '../hooks/usePortalAuth'
-import type { PortalEstabelecimento, PortalMensalidade, PortalMeResponse } from '../lib/portalApi'
+import {
+  createPagamentoCheckoutSession,
+  createPagamentoPortalSession,
+  PortalApiError,
+  type PortalEstabelecimento,
+  type PortalMensalidade,
+  type PortalMeResponse,
+} from '../lib/portalApi'
 
 function formatMoney(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -36,7 +43,21 @@ function StatusBadge({ status }: { status: PortalMensalidade['status'] }) {
 
 export default function Portal() {
   useDocumentTitle('Já sou cliente | Total Software')
-  const { token, data, loading, error, login, logout } = usePortalAuth()
+  const { token, data, loading, error, login, logout, refresh } = usePortalAuth()
+  const [checkoutBanner, setCheckoutBanner] = useState<'success' | 'cancelled' | null>(null)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const checkout = params.get('checkout')
+    if (checkout === 'success' || checkout === 'cancelled') {
+      setCheckoutBanner(checkout)
+      if (token) refresh()
+      params.delete('checkout')
+      const newSearch = params.toString()
+      window.history.replaceState(null, '', window.location.pathname + (newSearch ? `?${newSearch}` : ''))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <section className="page-content">
@@ -49,6 +70,14 @@ export default function Portal() {
           </p>
         </div>
       </div>
+
+      {checkoutBanner && (
+        <p className={`portal-checkout-banner portal-checkout-banner-${checkoutBanner}`}>
+          {checkoutBanner === 'success'
+            ? 'Pagamento automático ativado com sucesso.'
+            : 'Ativação cancelada. Você pode tentar novamente quando quiser.'}
+        </p>
+      )}
 
       {!token || (!data && !loading) ? (
         <PortalLoginForm loading={loading} error={error} onSubmit={login} />
@@ -262,8 +291,41 @@ function EstabelecimentosPopup({
 }
 
 function EstabelecimentoCard({ estabelecimento }: { estabelecimento: PortalEstabelecimento }) {
+  const { token } = usePortalAuth()
   const [open, setOpen] = useState(false)
+  const [pagamentoLoading, setPagamentoLoading] = useState(false)
+  const [pagamentoError, setPagamentoError] = useState<string | null>(null)
   const hasMensalidades = estabelecimento.mensalidades.length > 0
+
+  async function handleAtivarPagamento() {
+    if (!token) return
+    setPagamentoLoading(true)
+    setPagamentoError(null)
+    try {
+      const { url } = await createPagamentoCheckoutSession(token, estabelecimento.id)
+      window.location.href = url
+    } catch (err) {
+      setPagamentoError(
+        err instanceof PortalApiError ? err.message : 'Não foi possível iniciar o pagamento.',
+      )
+      setPagamentoLoading(false)
+    }
+  }
+
+  async function handleGerenciarPagamento() {
+    if (!token) return
+    setPagamentoLoading(true)
+    setPagamentoError(null)
+    try {
+      const { url } = await createPagamentoPortalSession(token)
+      window.location.href = url
+    } catch (err) {
+      setPagamentoError(
+        err instanceof PortalApiError ? err.message : 'Não foi possível abrir o gerenciamento.',
+      )
+      setPagamentoLoading(false)
+    }
+  }
 
   return (
     <div className="portal-estabelecimento-card">
@@ -288,6 +350,37 @@ function EstabelecimentoCard({ estabelecimento }: { estabelecimento: PortalEstab
           </div>
         )}
       </button>
+
+      <div className="portal-pagamento-section">
+        {estabelecimento.assinatura?.ativa ? (
+          <>
+            <p className="portal-pagamento-status">
+              Pagamento automático ativo
+              {estabelecimento.assinatura.proximaCobranca
+                ? ` — próxima cobrança em ${formatDate(estabelecimento.assinatura.proximaCobranca)}`
+                : ''}
+            </p>
+            <button
+              type="button"
+              className="portfolio-link portal-pagamento-btn"
+              onClick={handleGerenciarPagamento}
+              disabled={pagamentoLoading}
+            >
+              {pagamentoLoading ? 'Abrindo...' : 'Gerenciar pagamento'}
+            </button>
+          </>
+        ) : (
+          <button
+            type="button"
+            className="portfolio-link portal-pagamento-btn"
+            onClick={handleAtivarPagamento}
+            disabled={pagamentoLoading}
+          >
+            {pagamentoLoading ? 'Redirecionando...' : 'Ativar pagamento automático'}
+          </button>
+        )}
+        {pagamentoError && <p className="portal-error">{pagamentoError}</p>}
+      </div>
 
       {hasMensalidades && (
         <div className="portal-mensalidades-section">
