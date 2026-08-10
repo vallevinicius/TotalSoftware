@@ -63,6 +63,13 @@ body {
     cursor: none;
 }
 
+/* Links, buttons and form controls get a native cursor from the
+   browser's own stylesheet (e.g. `:any-link { cursor: pointer }`),
+   which wins over inheriting `none` from body. Reset explicitly. */
+a, button, input, textarea, select, summary, label, [role="button"] {
+    cursor: none;
+}
+
 /* Custom cursor */
 .cursor {
     width: 12px; height: 12px;
@@ -1300,7 +1307,7 @@ footer {
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    cursor: pointer;
+    cursor: none;
     transition: all 0.3s ease;
 }
 
@@ -1438,7 +1445,7 @@ footer {
     font-size: 0.85rem;
     font-weight: 600;
     letter-spacing: 0.05em;
-    cursor: pointer;
+    cursor: none;
     transition: all 0.3s ease;
     border-radius: 2px;
     text-align: left;
@@ -1493,7 +1500,8 @@ footer {
     .cursor,
     .cursor-ring { display: none; }
 
-    body { cursor: auto; }
+    body,
+    a, button, input, textarea, select, summary, label, [role="button"] { cursor: auto; }
 
     .hero-title { font-size: clamp(2.3rem, 13vw, 3.2rem); }
     .hero-label { margin-bottom: 1.2rem; }
@@ -1685,11 +1693,11 @@ footer {
 .portal-stat-card-clickable {
     font: inherit;
     color: inherit;
-    cursor: pointer;
+    cursor: none;
     width: 100%;
 }
 .portal-stat-card-clickable:disabled {
-    cursor: default;
+    cursor: none;
     opacity: 0.6;
 }
 
@@ -1746,7 +1754,7 @@ footer {
     font: inherit;
     text-align: left;
     color: inherit;
-    cursor: pointer;
+    cursor: none;
 }
 .portal-estabelecimento-header h5 {
     font-size: 1rem;
@@ -1805,7 +1813,7 @@ footer {
     font-size: 1.5rem;
     line-height: 1;
     color: var(--gray-400);
-    cursor: pointer;
+    cursor: none;
     padding: 0.25rem 0.5rem;
 }
 .portal-popup-close:hover {
@@ -1872,7 +1880,7 @@ footer {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--gray-600);
-    cursor: pointer;
+    cursor: none;
 }
 .portal-mensalidades-toggle:hover {
     color: var(--black);
