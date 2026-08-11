@@ -97,6 +97,54 @@ export const PRODUCTS: Product[] = [
       },
     ],
   },
+  {
+    slug: 'total-agenda',
+    name: 'Total Agenda',
+    category: 'SaaS de Agendamento',
+    status: 'Em breve',
+    visualClassName: 'portfolio-visual-agenda',
+    badge: 'SaaS',
+    wordmark: 'Total Agenda',
+    giantLabel: 'TotalAgenda',
+    caption: 'Agendamento sem dor de cabeça',
+    description:
+      'Sistema de agendamento online para negócios de serviço, com calendário, confirmações automáticas e gestão de clientes em um só lugar.',
+    about:
+      'O Total Agenda é um sistema de agendamento pensado para negócios de serviço em geral — barbearias, salões, clínicas, consultórios, personal trainers e afins. Centraliza a agenda de todos os profissionais, envia confirmações e lembretes automáticos para reduzir faltas, e mantém um cadastro organizado de clientes e histórico de atendimentos.',
+    highlights: [
+      'Agendamento online',
+      'Calendário centralizado por profissional',
+      'Confirmação e lembrete automático',
+      'Cadastro de clientes e histórico',
+      'Bloqueio de horários e folgas',
+      'Múltiplos profissionais e serviços',
+    ],
+    techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'MySQL'],
+  },
+  {
+    slug: 'total-control',
+    name: 'Total Control',
+    category: 'SaaS de Gestão Empresarial',
+    status: 'Em breve',
+    visualClassName: 'portfolio-visual-control',
+    badge: 'SaaS',
+    wordmark: 'Total Control',
+    giantLabel: 'TotalControl',
+    caption: 'Controle total do seu negócio',
+    description:
+      'Sistema de gestão para o dia a dia do negócio, com ponto de venda, controle de estoque e vendas no balcão em um só lugar.',
+    about:
+      'O Total Control é um sistema de controle geral do negócio, reunindo ponto de venda (PDV), controle de estoque e vendas no balcão em uma única plataforma. Permite abrir e fechar caixa, cadastrar produtos e fornecedores, acompanhar o histórico de movimentações e gerar relatórios de vendas para ter visibilidade completa da operação.',
+    highlights: [
+      'Ponto de venda (PDV)',
+      'Controle de estoque',
+      'Vendas no balcão',
+      'Abertura e fechamento de caixa',
+      'Cadastro de produtos e fornecedores',
+      'Relatórios de vendas',
+    ],
+    techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'MySQL'],
+  },
 ]
 
 export function getProductBySlug(slug: string | undefined) {

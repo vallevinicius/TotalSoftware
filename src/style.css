@@ -516,6 +516,18 @@ section.page-content {
     background: linear-gradient(135deg, #0a0a0a 0%, #454545 100%);
 }
 
+.portfolio-visual-apaixonese {
+    background: linear-gradient(135deg, #0a0a0a 0%, #333333 100%);
+}
+
+.portfolio-visual-agenda {
+    background: linear-gradient(135deg, #0a0a0a 0%, #3d3d3d 100%);
+}
+
+.portfolio-visual-control {
+    background: linear-gradient(135deg, #0a0a0a 0%, #474747 100%);
+}
+
 .portfolio-logo-image {
     width: min(100%, 140px);
     height: auto;
@@ -1022,8 +1034,11 @@ section.page-content {
 }
 
 .team-card {
+    display: block;
     cursor: none;
     text-align: center;
+    text-decoration: none;
+    color: inherit;
 }
 .team-photo {
     width: 100%;
@@ -1037,6 +1052,19 @@ section.page-content {
     transition: border-color 0.3s;
 }
 .team-card:hover .team-photo { border-color: #444; }
+
+.team-photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+    filter: grayscale(100%);
+    transition: filter 0.3s, transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.team-card:hover .team-photo-img {
+    filter: grayscale(0%);
+    transform: scale(1.04);
+}
 
 .team-initials {
     font-size: 3rem;
