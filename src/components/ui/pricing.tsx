@@ -139,6 +139,7 @@ export function PricingSection({
   accentColor = '#3b82f6',
 }: PricingSectionProps) {
   const [isMonthly, setIsMonthly] = useState(true)
+  const hasAnnualPricing = plans.some((plan) => plan.price !== plan.yearlyPrice)
   const containerRef = useRef<HTMLDivElement>(null)
   const [mousePosition, setMousePosition] = useState<{ x: number | null; y: number | null }>({
     x: null,
@@ -163,7 +164,7 @@ export function PricingSection({
             <h2 className="text-3xl font-extrabold tracking-tight text-(--black) sm:text-4xl">{title}</h2>
             <p className="whitespace-pre-line text-base text-(--gray-600)">{description}</p>
           </div>
-          <PricingToggle accentColor={accentColor} />
+          {hasAnnualPricing && <PricingToggle accentColor={accentColor} />}
           <div className="mt-12 grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
             {plans.map((plan, index) => (
               <PricingCard key={plan.name} plan={plan} index={index} accentColor={accentColor} />
@@ -302,7 +303,7 @@ function PricingCard({
               format={{
                 style: 'currency',
                 currency: 'BRL',
-                minimumFractionDigits: 0,
+                minimumFractionDigits: (isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)) % 1 === 0 ? 0 : 2,
               }}
             />
           </span>

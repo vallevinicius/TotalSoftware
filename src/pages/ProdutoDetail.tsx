@@ -97,7 +97,7 @@ export default function ProdutoDetail() {
           <PricingSection
             plans={product.pricingPlans}
             title="Planos e preços"
-            description={`Escolha o plano ideal para a sua pousada.`}
+            description={product.pricingDescription ?? 'Escolha o plano ideal para o seu negócio.'}
             accentColor={product.accentColor}
           />
         </section>

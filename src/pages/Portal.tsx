@@ -4,11 +4,17 @@ import { usePortalAuth } from '../hooks/usePortalAuth'
 import {
   createPagamentoCheckoutSession,
   createPagamentoPortalSession,
+  fetchPortalPlanos,
   PortalApiError,
   type PortalEstabelecimento,
   type PortalMensalidade,
   type PortalMeResponse,
 } from '../lib/portalApi'
+
+interface PendingPlano {
+  produto: 'totalagenda'
+  planoNome: string
+}
 
 function formatMoney(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -43,16 +49,32 @@ function StatusBadge({ status }: { status: PortalMensalidade['status'] }) {
 
 export default function Portal() {
   useDocumentTitle('Já sou cliente | Total Software')
-  const { token, data, loading, error, login, logout, refresh } = usePortalAuth()
+  const { token, data, loading, error, login, cadastro, logout, refresh } = usePortalAuth()
   const [checkoutBanner, setCheckoutBanner] = useState<'success' | 'cancelled' | null>(null)
+  const [pendingPlano, setPendingPlano] = useState<PendingPlano | null>(null)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
+    let changed = false
+
     const checkout = params.get('checkout')
     if (checkout === 'success' || checkout === 'cancelled') {
       setCheckoutBanner(checkout)
       if (token) refresh()
       params.delete('checkout')
+      changed = true
+    }
+
+    const produto = params.get('produto')
+    const plano = params.get('plano')
+    if (produto === 'totalagenda' && plano) {
+      setPendingPlano({ produto: 'totalagenda', planoNome: plano })
+      params.delete('produto')
+      params.delete('plano')
+      changed = true
+    }
+
+    if (changed) {
       const newSearch = params.toString()
       window.history.replaceState(null, '', window.location.pathname + (newSearch ? `?${newSearch}` : ''))
     }
@@ -80,13 +102,215 @@ export default function Portal() {
       )}
 
       {!token || (!data && !loading) ? (
-        <PortalLoginForm loading={loading} error={error} onSubmit={login} />
+        pendingPlano ? (
+          <PortalAuthGate
+            pendingPlano={pendingPlano}
+            loading={loading}
+            error={error}
+            onLogin={login}
+            onCadastro={cadastro}
+          />
+        ) : (
+          <PortalLoginForm loading={loading} error={error} onSubmit={login} />
+        )
       ) : loading && !data ? (
         <p className="portal-loading">Carregando seus dados...</p>
       ) : data ? (
-        <PortalDashboard data={data} onLogout={logout} />
+        <>
+          {pendingPlano && token && (
+            <PendingCheckoutCard
+              token={token}
+              pendingPlano={pendingPlano}
+              onDone={() => setPendingPlano(null)}
+            />
+          )}
+          <PortalDashboard data={data} onLogout={logout} />
+        </>
       ) : null}
     </section>
+  )
+}
+
+function PortalAuthGate({
+  pendingPlano,
+  loading,
+  error,
+  onLogin,
+  onCadastro,
+}: {
+  pendingPlano: PendingPlano
+  loading: boolean
+  error: string | null
+  onLogin: (email: string, senha: string) => Promise<boolean>
+  onCadastro: (params: { nome: string; email: string; senha: string; telefone?: string }) => Promise<boolean>
+}) {
+  const [tab, setTab] = useState<'cadastro' | 'login'>('cadastro')
+
+  return (
+    <div className="portal-auth-gate">
+      <p className="portal-plano-banner">
+        Plano <strong>{pendingPlano.planoNome}</strong> selecionado — crie sua conta ou entre para continuar.
+      </p>
+      <div className="portal-auth-tabs">
+        <button
+          type="button"
+          className={`portal-auth-tab${tab === 'cadastro' ? ' is-active' : ''}`}
+          onClick={() => setTab('cadastro')}
+        >
+          Criar conta
+        </button>
+        <button
+          type="button"
+          className={`portal-auth-tab${tab === 'login' ? ' is-active' : ''}`}
+          onClick={() => setTab('login')}
+        >
+          Já sou cliente
+        </button>
+      </div>
+      {tab === 'cadastro' ? (
+        <PortalCadastroForm loading={loading} error={error} onSubmit={onCadastro} />
+      ) : (
+        <PortalLoginForm loading={loading} error={error} onSubmit={onLogin} />
+      )}
+    </div>
+  )
+}
+
+function PortalCadastroForm({
+  loading,
+  error,
+  onSubmit,
+}: {
+  loading: boolean
+  error: string | null
+  onSubmit: (params: { nome: string; email: string; senha: string; telefone?: string }) => Promise<boolean>
+}) {
+  const [nome, setNome] = useState('')
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [telefone, setTelefone] = useState('')
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    await onSubmit({ nome, email, senha, telefone: telefone || undefined })
+  }
+
+  return (
+    <form className="portal-login-card" onSubmit={handleSubmit}>
+      <div className="portal-login-field">
+        <label htmlFor="cadastro-nome">Nome</label>
+        <input
+          id="cadastro-nome"
+          type="text"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          autoComplete="name"
+          required
+        />
+      </div>
+      <div className="portal-login-field">
+        <label htmlFor="cadastro-email">E-mail</label>
+        <input
+          id="cadastro-email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
+          required
+        />
+      </div>
+      <div className="portal-login-field">
+        <label htmlFor="cadastro-senha">Senha</label>
+        <input
+          id="cadastro-senha"
+          type="password"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
+          autoComplete="new-password"
+          minLength={6}
+          required
+        />
+      </div>
+      <div className="portal-login-field">
+        <label htmlFor="cadastro-telefone">Telefone (opcional)</label>
+        <input
+          id="cadastro-telefone"
+          type="tel"
+          value={telefone}
+          onChange={(e) => setTelefone(e.target.value)}
+          autoComplete="tel"
+        />
+      </div>
+      {error && <p className="portal-error">{error}</p>}
+      <button type="submit" className="portfolio-link portal-login-submit" disabled={loading}>
+        {loading ? 'Criando conta...' : 'Criar conta e continuar'}
+      </button>
+    </form>
+  )
+}
+
+function PendingCheckoutCard({
+  token,
+  pendingPlano,
+  onDone,
+}: {
+  token: string
+  pendingPlano: PendingPlano
+  onDone: () => void
+}) {
+  const [nomeEmpresa, setNomeEmpresa] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleConfirmar(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+    try {
+      const planos = await fetchPortalPlanos('totalagenda')
+      const plano = planos.find((p) => p.nome === pendingPlano.planoNome)
+      if (!plano) {
+        setError('Não foi possível encontrar este plano. Fale conosco.')
+        setLoading(false)
+        return
+      }
+      const { url } = await createPagamentoCheckoutSession(token, {
+        produto: 'totalagenda',
+        planoId: plano.id,
+        nomeEmpresa,
+      })
+      window.location.href = url
+    } catch (err) {
+      setError(err instanceof PortalApiError ? err.message : 'Não foi possível iniciar o pagamento.')
+      setLoading(false)
+    }
+  }
+
+  return (
+    <form className="portal-login-card portal-pending-plano" onSubmit={handleConfirmar}>
+      <p className="portal-plano-banner">
+        Assinar plano <strong>{pendingPlano.planoNome}</strong> do TotalAgenda
+      </p>
+      <div className="portal-login-field">
+        <label htmlFor="pending-nome-empresa">Nome da empresa/negócio</label>
+        <input
+          id="pending-nome-empresa"
+          type="text"
+          value={nomeEmpresa}
+          onChange={(e) => setNomeEmpresa(e.target.value)}
+          required
+        />
+      </div>
+      {error && <p className="portal-error">{error}</p>}
+      <div className="portal-pending-plano-actions">
+        <button type="submit" className="portfolio-link portal-login-submit" disabled={loading}>
+          {loading ? 'Redirecionando...' : 'Confirmar e ir para pagamento'}
+        </button>
+        <button type="button" className="detail-page-back" onClick={onDone} disabled={loading}>
+          Agora não
+        </button>
+      </div>
+    </form>
   )
 }
 
@@ -302,7 +526,7 @@ function EstabelecimentoCard({ estabelecimento }: { estabelecimento: PortalEstab
     setPagamentoLoading(true)
     setPagamentoError(null)
     try {
-      const { url } = await createPagamentoCheckoutSession(token, estabelecimento.id)
+      const { url } = await createPagamentoCheckoutSession(token, { estabelecimentoId: estabelecimento.id })
       window.location.href = url
     } catch (err) {
       setPagamentoError(

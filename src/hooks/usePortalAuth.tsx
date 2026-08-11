@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { portalLogin, portalMe, PortalApiError, type PortalMeResponse } from '../lib/portalApi'
+import { portalLogin, portalCadastro, portalMe, PortalApiError, type PortalMeResponse } from '../lib/portalApi'
 
 const TOKEN_STORAGE_KEY = 'ts_portal_token'
 
@@ -9,6 +9,7 @@ interface PortalAuthValue {
   loading: boolean
   error: string | null
   login: (email: string, senha: string) => Promise<boolean>
+  cadastro: (params: { nome: string; email: string; senha: string; telefone?: string }) => Promise<boolean>
   logout: () => void
   refresh: () => Promise<void>
 }
@@ -62,6 +63,25 @@ export function PortalAuthProvider({ children }: { children: ReactNode }) {
     }
   }, [loadMe])
 
+  const cadastro = useCallback(
+    async (params: { nome: string; email: string; senha: string; telefone?: string }) => {
+      setLoading(true)
+      setError(null)
+      try {
+        const result = await portalCadastro(params)
+        localStorage.setItem(TOKEN_STORAGE_KEY, result.token)
+        setToken(result.token)
+        await loadMe(result.token)
+        return true
+      } catch (err) {
+        setError(err instanceof PortalApiError ? err.message : 'Não foi possível criar sua conta.')
+        setLoading(false)
+        return false
+      }
+    },
+    [loadMe],
+  )
+
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_STORAGE_KEY)
     setToken(null)
@@ -74,8 +94,8 @@ export function PortalAuthProvider({ children }: { children: ReactNode }) {
   }, [token, loadMe])
 
   const value = useMemo<PortalAuthValue>(
-    () => ({ token, data, loading, error, login, logout, refresh }),
-    [token, data, loading, error, login, logout, refresh],
+    () => ({ token, data, loading, error, login, cadastro, logout, refresh }),
+    [token, data, loading, error, login, cadastro, logout, refresh],
   )
 
   return <PortalAuthContext.Provider value={value}>{children}</PortalAuthContext.Provider>

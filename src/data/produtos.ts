@@ -17,6 +17,7 @@ export interface Product {
   themeClassName?: string
   accentColor?: string
   pricingPlans?: PricingPlan[]
+  pricingDescription?: string
 }
 
 export const PRODUCTS: Product[] = [
@@ -47,6 +48,7 @@ export const PRODUCTS: Product[] = [
     techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'MySQL'],
     themeClassName: 'theme-pousada',
     accentColor: '#3b82f6',
+    pricingDescription: 'Escolha o plano ideal para a sua pousada.',
     // TODO: preços de exemplo — confirmar valores reais antes de publicar
     pricingPlans: [
       {
@@ -94,6 +96,63 @@ export const PRODUCTS: Product[] = [
           'Suporte prioritário',
           'Onboarding dedicado',
         ],
+      },
+    ],
+  },
+  {
+    slug: 'total-agenda',
+    name: 'TotalAgenda',
+    category: 'SaaS de Agendamento',
+    status: 'Em desenvolvimento',
+    visualClassName: 'portfolio-visual-agenda',
+    badge: 'SaaS',
+    wordmark: 'TotalAgenda',
+    giantLabel: 'TotalAgenda',
+    caption: 'Agenda online para negócios com equipe',
+    description:
+      'Sistema de agenda online para negócios de serviços com equipe, com controle de horários e profissionais em um só lugar.',
+    about:
+      'O TotalAgenda é um sistema de agenda online para negócios de serviços que trabalham com equipe, como salões, clínicas e estúdios. Os planos variam de acordo com o número de profissionais que podem usar o sistema ao mesmo tempo.',
+    // TODO: copy resumida — ampliar descrição/destaques de marketing do TotalAgenda quando houver mais informações do produto
+    highlights: [
+      'Agenda de horários online',
+      'Gestão de profissionais por plano',
+      'Assinatura mensal via cartão',
+    ],
+    techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'PostgreSQL'],
+    accentColor: '#8b5cf6',
+    pricingDescription: 'Escolha o plano ideal para o seu negócio.',
+    pricingPlans: [
+      {
+        name: 'Essencial',
+        price: '29.9',
+        yearlyPrice: '29.9',
+        period: 'mês',
+        description: 'Para negócios pequenos começando a organizar a agenda.',
+        buttonText: 'Assinar',
+        href: '/portal?produto=totalagenda&plano=Essencial',
+        features: ['Agenda de horários online', 'Até 2 profissionais'],
+      },
+      {
+        name: 'Profissional',
+        price: '79.9',
+        yearlyPrice: '79.9',
+        period: 'mês',
+        description: 'Para negócios com uma equipe um pouco maior.',
+        buttonText: 'Assinar',
+        href: '/portal?produto=totalagenda&plano=Profissional',
+        isPopular: true,
+        features: ['Tudo do plano Essencial', 'Até 5 profissionais'],
+      },
+      {
+        name: 'Premium',
+        price: '149.9',
+        yearlyPrice: '149.9',
+        period: 'mês',
+        description: 'Para negócios que precisam de uma equipe maior.',
+        buttonText: 'Assinar',
+        href: '/portal?produto=totalagenda&plano=Premium',
+        features: ['Tudo do plano Profissional', 'Profissionais ilimitados'],
       },
     ],
   },

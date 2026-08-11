@@ -80,6 +80,40 @@ export async function portalLogin(
   return response.json()
 }
 
+export async function portalCadastro(params: {
+  nome: string
+  email: string
+  senha: string
+  telefone?: string
+}): Promise<{ token: string; cliente: PortalCliente }> {
+  const response = await fetch(`${requireApiUrl()}/api/portal/cadastro`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
+  })
+  if (!response.ok) {
+    throw new PortalApiError(await parseError(response, 'Não foi possível criar sua conta.'))
+  }
+  return response.json()
+}
+
+export interface PortalPlano {
+  id: number
+  nome: string
+  precoCents: number
+}
+
+export async function fetchPortalPlanos(produto: 'totalpousada' | 'totalagenda'): Promise<PortalPlano[]> {
+  const response = await fetch(
+    `${requireApiUrl()}/api/portal/planos?produto=${encodeURIComponent(produto)}`,
+  )
+  if (!response.ok) {
+    throw new PortalApiError(await parseError(response, 'Não foi possível carregar os planos.'))
+  }
+  const data = await response.json()
+  return data.planos
+}
+
 export async function portalMe(token: string): Promise<PortalMeResponse> {
   const response = await fetch(`${requireApiUrl()}/api/portal/me`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -92,14 +126,23 @@ export async function portalMe(token: string): Promise<PortalMeResponse> {
   return response.json()
 }
 
+export type CheckoutSessionParams =
+  | { produto?: 'totalpousada'; estabelecimentoId: number }
+  | { produto: 'totalagenda'; planoId: number; nomeEmpresa: string }
+
 export async function createPagamentoCheckoutSession(
   token: string,
-  estabelecimentoId: number,
+  params: CheckoutSessionParams,
 ): Promise<{ url: string }> {
+  const body =
+    params.produto === 'totalagenda'
+      ? { produto: params.produto, planoId: params.planoId, nomeEmpresa: params.nomeEmpresa }
+      : { produto: params.produto ?? 'totalpousada', estabelecimentoId: params.estabelecimentoId }
+
   const response = await fetch(`${requireApiUrl()}/api/portal/pagamento/checkout-session`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ estabelecimentoId }),
+    body: JSON.stringify(body),
   })
   if (!response.ok) {
     throw new PortalApiError(
