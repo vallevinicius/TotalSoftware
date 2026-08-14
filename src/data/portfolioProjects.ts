@@ -61,6 +61,27 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     href: 'https://meidesaqua.saquarema.rj.gov.br/',
     images: ['/images/portfolio/mei-de-saquarema-01.png', '/images/portfolio/mei-de-saquarema-02.png'],
   },
+  {
+    slug: 'apaixone-se-saquarema',
+    title: 'Apaixone-se por Saquarema',
+    client: 'Prefeitura de Saquarema',
+    category: 'Portal de Turismo',
+    year: '2025',
+    visualClassName: 'portfolio-visual-apaixonese',
+    badge: 'Turismo',
+    wordmark: 'Apaixone-se',
+    giantLabel: 'Apaixone-se',
+    caption: 'Apaixone-se por Saquarema • Turismo',
+    description:
+      'Portal oficial de turismo de Saquarema, com praias, eventos, gastronomia e atrações da cidade.',
+    about:
+      'O Apaixone-se por Saquarema é o portal oficial de turismo da Prefeitura, feito para apresentar as belezas naturais, praias, eventos, gastronomia e atrações da cidade. Reúne roteiros e informações práticas das secretarias envolvidas para ajudar visitantes e moradores a planejar sua experiência em Saquarema.',
+    highlights: ['Praias e atrações', 'Roteiros de viagem', 'Agenda de eventos', 'Gastronomia local', 'Tradução automática'],
+    award: '',
+    tags: ['Portal de Turismo', 'Turismo', 'Saquarema'],
+    href: 'https://apaixonese.saquarema.rj.gov.br/',
+    images: [],
+  },
 ]
 
 export function getProjectBySlug(slug: string | undefined) {

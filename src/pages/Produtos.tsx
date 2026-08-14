@@ -45,22 +45,6 @@ export default function Produtos() {
             </div>
           </Link>
         ))}
-
-        <div className="portfolio-card reveal" style={{ transitionDelay: '0.35s' }}>
-          <div className="portfolio-visual portfolio-visual-logo">
-            <div className="portfolio-mei-mark">
-              <span className="portfolio-mei-badge">Total Control</span>
-              <div className="portfolio-mei-wordmark">Em breve</div>
-            </div>
-            <div className="portfolio-logo-caption" style={{ textAlign: 'center' }}>
-              Estamos preparando novidades para você
-            </div>
-          </div>
-          <div className="portfolio-meta">
-            <h3>Total Control</h3>
-            <p>Novo produto em desenvolvimento. Em breve mais detalhes por aqui.</p>
-          </div>
-        </div>
       </div>
     </section>
   )
