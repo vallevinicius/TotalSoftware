@@ -159,30 +159,6 @@ export const PRODUCTS: Product[] = [
     ],
   },
   {
-    slug: "total-agenda",
-    name: "Total Agenda",
-    category: "SaaS de Agendamento",
-    status: "Em breve",
-    visualClassName: "portfolio-visual-agenda",
-    badge: "SaaS",
-    wordmark: "Total Agenda",
-    giantLabel: "TotalAgenda",
-    caption: "Agendamento sem dor de cabeça",
-    description:
-      "Sistema de agendamento online para negócios de serviço, com calendário, confirmações automáticas e gestão de clientes em um só lugar.",
-    about:
-      "O Total Agenda é um sistema de agendamento pensado para negócios de serviço em geral — barbearias, salões, clínicas, consultórios, personal trainers e afins. Centraliza a agenda de todos os profissionais, envia confirmações e lembretes automáticos para reduzir faltas, e mantém um cadastro organizado de clientes e histórico de atendimentos.",
-    highlights: [
-      "Agendamento online",
-      "Calendário centralizado por profissional",
-      "Confirmação e lembrete automático",
-      "Cadastro de clientes e histórico",
-      "Bloqueio de horários e folgas",
-      "Múltiplos profissionais e serviços",
-    ],
-    techStack: ["Next.js", "TypeScript", "Tailwind CSS", "MySQL"],
-  },
-  {
     slug: "total-control",
     name: "Total Control",
     category: "SaaS de Gestão Empresarial",
