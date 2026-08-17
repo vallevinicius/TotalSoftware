@@ -122,6 +122,7 @@ export const PRODUCTS: Product[] = [
       "Assinatura mensal via cartão",
     ],
     techStack: ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL"],
+    themeClassName: "theme-agenda",
     accentColor: "#8b5cf6",
     pricingDescription: "Escolha o plano ideal para o seu negócio.",
     pricingPlans: [
@@ -181,6 +182,59 @@ export const PRODUCTS: Product[] = [
       "Relatórios de vendas",
     ],
     techStack: ["Next.js", "TypeScript", "Tailwind CSS", "MySQL"],
+    themeClassName: "theme-control",
+    accentColor: "#10B981",
+    pricingDescription: "Escolha o plano ideal para o seu negócio.",
+    pricingPlans: [
+      {
+        name: "Starter",
+        price: "59.9",
+        yearlyPrice: "59.9",
+        period: "mês",
+        description: "Comece com 14 dias grátis, depois R$ 59,90/mês.",
+        buttonText: "Falar com a gente",
+        href: "/fale-conosco",
+        features: [
+          "Teste grátis por 14 dias",
+          "Ponto de venda (PDV)",
+          "Vendas no balcão ilimitadas",
+          "Controle de estoque completo",
+          "Abertura e fechamento de caixa",
+        ],
+      },
+      {
+        name: "Pro",
+        price: "129.9",
+        yearlyPrice: "129.9",
+        period: "mês",
+        description: "Para negócios com equipe de vendas e comissionamento.",
+        buttonText: "Falar com a gente",
+        href: "/fale-conosco",
+        isPopular: true,
+        features: [
+          "Tudo do plano Starter",
+          "Gestão de equipe",
+          "Comissão de vendedores",
+          "Relatórios de vendas avançados",
+        ],
+      },
+      {
+        name: "Enterprise",
+        price: "249.9",
+        yearlyPrice: "249.9",
+        period: "mês (1ª loja)",
+        description:
+          "Para redes com mais de uma loja. A partir de R$ 249,90 (1ª loja) + R$ 79,90 por loja adicional.",
+        buttonText: "Falar com a gente",
+        href: "/fale-conosco",
+        features: [
+          "Tudo do plano Pro",
+          "Múltiplas lojas",
+          "R$ 79,90 por loja adicional",
+          "Suporte prioritário",
+        ],
+      },
+    ],
   },
 ];
 

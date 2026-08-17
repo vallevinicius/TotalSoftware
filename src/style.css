@@ -648,11 +648,15 @@ section.page-content {
 }
 
 .portfolio-visual-pousada {
-  background: linear-gradient(135deg, #0a0a0a 0%, #454545 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #1e3a8a 100%);
 }
 
 .portfolio-visual-agenda {
   background: linear-gradient(135deg, #0a0a0a 0%, #4c1d95 100%);
+}
+
+.portfolio-visual-control {
+  background: linear-gradient(135deg, #0a0a0a 0%, #064e3b 100%);
 }
 
 .portfolio-logo-image {
@@ -1075,6 +1079,122 @@ section.page-content {
 }
 .theme-pousada .detail-page-back:hover {
   color: #3b82f6;
+}
+
+/* Total Agenda brand theme (SaaS colors, animated gradient background) */
+.theme-agenda {
+  --black: #f1f5f9;
+  --white: #f8fafc;
+  --gray-100: rgba(255, 255, 255, 0.08);
+  --gray-200: rgba(255, 255, 255, 0.16);
+  --gray-400: #94a3b8;
+  --gray-600: #cbd5e1;
+  --card-surface: rgba(15, 23, 42, 0.55);
+  --card-border: rgba(255, 255, 255, 0.14);
+
+  position: relative;
+  color: var(--black);
+  background: transparent;
+}
+.theme-agenda .detail-page-hero,
+.theme-agenda section {
+  background: transparent;
+}
+.theme-agenda .detail-page-panel {
+  background: var(--card-surface);
+  backdrop-filter: blur(20px);
+  color: #f1f5f9;
+}
+.theme-agenda .detail-page-info {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.theme-agenda .detail-page-info-cell {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+}
+.theme-agenda .detail-page-info-cell p,
+.theme-agenda .detail-page-info-cell a {
+  color: #f1f5f9;
+}
+.theme-agenda .detail-page-label {
+  color: rgba(241, 245, 249, 0.5);
+}
+.theme-agenda .product-feature-card {
+  background: var(--card-surface);
+  border-color: var(--card-border);
+  backdrop-filter: blur(12px);
+}
+.theme-agenda .product-feature-icon {
+  color: #a78bfa;
+}
+.theme-agenda .portfolio-link {
+  border-color: var(--gray-200);
+}
+.theme-agenda .portfolio-link:hover {
+  background: #8b5cf6;
+  border-color: #8b5cf6;
+}
+.theme-agenda .detail-page-back:hover {
+  color: #8b5cf6;
+}
+
+/* Total Control brand theme (SaaS colors, animated neon mesh background) */
+.theme-control {
+  --black: #f1f5f9;
+  --white: #f8fafc;
+  --gray-100: rgba(255, 255, 255, 0.08);
+  --gray-200: rgba(255, 255, 255, 0.16);
+  --gray-400: #94a3b8;
+  --gray-600: #cbd5e1;
+  --card-surface: rgba(15, 23, 42, 0.55);
+  --card-border: rgba(255, 255, 255, 0.14);
+
+  position: relative;
+  color: var(--black);
+  background: transparent;
+}
+.theme-control .detail-page-hero,
+.theme-control section {
+  background: transparent;
+}
+.theme-control .detail-page-panel {
+  background: var(--card-surface);
+  backdrop-filter: blur(20px);
+  color: #f1f5f9;
+}
+.theme-control .detail-page-info {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.theme-control .detail-page-info-cell {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+}
+.theme-control .detail-page-info-cell p,
+.theme-control .detail-page-info-cell a {
+  color: #f1f5f9;
+}
+.theme-control .detail-page-label {
+  color: rgba(241, 245, 249, 0.5);
+}
+.theme-control .product-feature-card {
+  background: var(--card-surface);
+  border-color: var(--card-border);
+  backdrop-filter: blur(12px);
+}
+.theme-control .product-feature-icon {
+  color: #10b981;
+}
+.theme-control .portfolio-link {
+  border-color: var(--gray-200);
+}
+.theme-control .portfolio-link:hover {
+  background: #10b981;
+  border-color: #10b981;
+}
+.theme-control .detail-page-back:hover {
+  color: #10b981;
 }
 
 .tag {

@@ -7,6 +7,8 @@ import { getProductBySlug } from '../data/produtos'
 import { ScrollLinePath } from '../components/ui/scroll-line-path'
 import { PricingSection } from '../components/ui/pricing'
 import BackgroundGradientSnippet from '../components/ui/background-gradient-snippet'
+import AnimatedGradient from '../components/ui/animated-gradient'
+import NeonMesh from '../components/ui/neon-mesh'
 
 export default function ProdutoDetail() {
   const { slug } = useParams()
@@ -25,7 +27,31 @@ export default function ProdutoDetail() {
 
   return (
     <article className={`detail-page ${product.themeClassName ?? ''}`}>
-      {product.themeClassName && <BackgroundGradientSnippet color={product.accentColor} />}
+      {product.themeClassName === 'theme-pousada' && (
+        <BackgroundGradientSnippet color={product.accentColor} />
+      )}
+      {product.themeClassName === 'theme-agenda' && (
+        <AnimatedGradient
+          config={{
+            preset: 'custom',
+            color1: product.accentColor ?? '#8b5cf6',
+            color2: '#000000',
+            color3: '#000000',
+            proportion: 63,
+            scale: 0.75,
+            speed: 30,
+            distortion: 5,
+            swirl: 61,
+            swirlIterations: 5,
+            softness: 100,
+            offset: -168,
+            shape: 'Checks',
+            shapeSize: 28,
+          }}
+          style={{ position: 'fixed' }}
+        />
+      )}
+      {product.themeClassName === 'theme-control' && <NeonMesh />}
       <section ref={heroRef} className="detail-page-hero">
         <div className="detail-page-hero-inner">
           <Link to="/produtos" className="detail-page-back">
@@ -33,11 +59,13 @@ export default function ProdutoDetail() {
           </Link>
           <h1 className="detail-page-title">{product.name}</h1>
           <p className="detail-page-sub">Role para conhecer o produto</p>
-          <ScrollLinePath
-            className="detail-page-line"
-            scrollYProgress={scrollYProgress}
-            stroke={product.accentColor}
-          />
+          {product.themeClassName !== 'theme-control' && (
+            <ScrollLinePath
+              className="detail-page-line"
+              scrollYProgress={scrollYProgress}
+              stroke={product.accentColor}
+            />
+          )}
         </div>
       </section>
 
