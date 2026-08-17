@@ -2,19 +2,22 @@ import { useEffect, useState } from 'react'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { usePortalAuth } from '../hooks/usePortalAuth'
 import {
+  createEstabelecimento,
   createPagamentoCheckoutSession,
   createPagamentoPortalSession,
   fetchPortalPlanos,
   PortalApiError,
+  type PortalCadastroParams,
   type PortalEstabelecimento,
   type PortalMensalidade,
   type PortalMeResponse,
 } from '../lib/portalApi'
+import { buscarEnderecoPorCep, maskCep, maskCnpj, maskCpf, maskTelefone } from '../lib/masks'
 
-interface PendingPlano {
-  produto: 'totalagenda'
-  planoNome: string
-}
+type PendingPlano =
+  | { produto: 'totalagenda'; planoNome: string }
+  | { produto: 'totalpousada'; planoNome: string }
+  | { produto: 'totalcontrol'; planoNome: string }
 
 function formatMoney(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -67,8 +70,8 @@ export default function Portal() {
 
     const produto = params.get('produto')
     const plano = params.get('plano')
-    if (produto === 'totalagenda' && plano) {
-      setPendingPlano({ produto: 'totalagenda', planoNome: plano })
+    if ((produto === 'totalagenda' || produto === 'totalpousada' || produto === 'totalcontrol') && plano) {
+      setPendingPlano({ produto, planoNome: plano })
       params.delete('produto')
       params.delete('plano')
       changed = true
@@ -142,7 +145,7 @@ function PortalAuthGate({
   loading: boolean
   error: string | null
   onLogin: (email: string, senha: string) => Promise<boolean>
-  onCadastro: (params: { nome: string; email: string; senha: string; telefone?: string }) => Promise<boolean>
+  onCadastro: (params: PortalCadastroParams) => Promise<boolean>
 }) {
   const [tab, setTab] = useState<'cadastro' | 'login'>('cadastro')
 
@@ -176,6 +179,23 @@ function PortalAuthGate({
   )
 }
 
+const emptyCadastroForm = {
+  nome: '',
+  email: '',
+  senha: '',
+  telefone: '',
+  cpf: '',
+  dataNascimento: '',
+  cep: '',
+  rua: '',
+  numero: '',
+  complemento: '',
+  bairro: '',
+  cidade: '',
+  estado: '',
+  cargo: '',
+}
+
 function PortalCadastroForm({
   loading,
   error,
@@ -183,70 +203,213 @@ function PortalCadastroForm({
 }: {
   loading: boolean
   error: string | null
-  onSubmit: (params: { nome: string; email: string; senha: string; telefone?: string }) => Promise<boolean>
+  onSubmit: (params: PortalCadastroParams) => Promise<boolean>
 }) {
-  const [nome, setNome] = useState('')
-  const [email, setEmail] = useState('')
-  const [senha, setSenha] = useState('')
-  const [telefone, setTelefone] = useState('')
+  const [form, setForm] = useState(emptyCadastroForm)
+  const [buscandoCep, setBuscandoCep] = useState(false)
+
+  async function handleCepBlur() {
+    const digits = form.cep.replace(/\D/g, '')
+    if (digits.length !== 8) return
+
+    setBuscandoCep(true)
+    const endereco = await buscarEnderecoPorCep(form.cep)
+    setBuscandoCep(false)
+    if (!endereco) return
+
+    setForm((prev) => ({
+      ...prev,
+      rua: endereco.rua || prev.rua,
+      bairro: endereco.bairro || prev.bairro,
+      cidade: endereco.cidade || prev.cidade,
+      estado: endereco.estado || prev.estado,
+    }))
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    await onSubmit({ nome, email, senha, telefone: telefone || undefined })
+    await onSubmit({
+      nome: form.nome,
+      email: form.email,
+      senha: form.senha,
+      telefone: form.telefone || undefined,
+      cpf: form.cpf || undefined,
+      dataNascimento: form.dataNascimento || undefined,
+      cep: form.cep || undefined,
+      rua: form.rua || undefined,
+      numero: form.numero || undefined,
+      complemento: form.complemento || undefined,
+      bairro: form.bairro || undefined,
+      cidade: form.cidade || undefined,
+      estado: form.estado || undefined,
+      cargo: form.cargo || undefined,
+    })
   }
 
   return (
-    <form className="portal-login-card" onSubmit={handleSubmit}>
-      <div className="portal-login-field">
-        <label htmlFor="cadastro-nome">Nome</label>
-        <input
-          id="cadastro-nome"
-          type="text"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          autoComplete="name"
-          required
-        />
+    <form className="portal-login-card portal-cadastro-form" onSubmit={handleSubmit}>
+      <div className="portal-form-section">
+        <h5 className="portal-form-section-title">Dados pessoais</h5>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-nome">Nome</label>
+          <input
+            id="cadastro-nome"
+            type="text"
+            value={form.nome}
+            onChange={(e) => setForm({ ...form, nome: e.target.value })}
+            autoComplete="name"
+            required
+          />
+        </div>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-email">E-mail</label>
+          <input
+            id="cadastro-email"
+            type="email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            autoComplete="email"
+            required
+          />
+        </div>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-senha">Senha</label>
+          <input
+            id="cadastro-senha"
+            type="password"
+            value={form.senha}
+            onChange={(e) => setForm({ ...form, senha: e.target.value })}
+            autoComplete="new-password"
+            minLength={6}
+            required
+          />
+        </div>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-telefone">Telefone</label>
+          <input
+            id="cadastro-telefone"
+            type="tel"
+            value={form.telefone}
+            onChange={(e) => setForm({ ...form, telefone: maskTelefone(e.target.value) })}
+            autoComplete="tel"
+          />
+        </div>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-cpf">CPF</label>
+          <input
+            id="cadastro-cpf"
+            type="text"
+            value={form.cpf}
+            onChange={(e) => setForm({ ...form, cpf: maskCpf(e.target.value) })}
+            inputMode="numeric"
+            maxLength={14}
+          />
+        </div>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-data-nascimento">Data de nascimento</label>
+          <input
+            id="cadastro-data-nascimento"
+            type="date"
+            value={form.dataNascimento}
+            onChange={(e) => setForm({ ...form, dataNascimento: e.target.value })}
+          />
+        </div>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-cargo">Cargo / função</label>
+          <input
+            id="cadastro-cargo"
+            type="text"
+            value={form.cargo}
+            onChange={(e) => setForm({ ...form, cargo: e.target.value })}
+          />
+        </div>
       </div>
-      <div className="portal-login-field">
-        <label htmlFor="cadastro-email">E-mail</label>
-        <input
-          id="cadastro-email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          autoComplete="email"
-          required
-        />
+
+      <div className="portal-form-section">
+        <h5 className="portal-form-section-title">Endereço</h5>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-cep">CEP</label>
+          <input
+            id="cadastro-cep"
+            type="text"
+            value={form.cep}
+            onChange={(e) => setForm({ ...form, cep: maskCep(e.target.value) })}
+            onBlur={handleCepBlur}
+            inputMode="numeric"
+            maxLength={9}
+            disabled={buscandoCep}
+          />
+        </div>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-rua">Rua</label>
+          <input
+            id="cadastro-rua"
+            type="text"
+            value={form.rua}
+            onChange={(e) => setForm({ ...form, rua: e.target.value })}
+          />
+        </div>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-numero">Número</label>
+          <input
+            id="cadastro-numero"
+            type="text"
+            value={form.numero}
+            onChange={(e) => setForm({ ...form, numero: e.target.value })}
+          />
+        </div>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-complemento">Complemento</label>
+          <input
+            id="cadastro-complemento"
+            type="text"
+            value={form.complemento}
+            onChange={(e) => setForm({ ...form, complemento: e.target.value })}
+          />
+        </div>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-bairro">Bairro</label>
+          <input
+            id="cadastro-bairro"
+            type="text"
+            value={form.bairro}
+            onChange={(e) => setForm({ ...form, bairro: e.target.value })}
+          />
+        </div>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-cidade">Cidade</label>
+          <input
+            id="cadastro-cidade"
+            type="text"
+            value={form.cidade}
+            onChange={(e) => setForm({ ...form, cidade: e.target.value })}
+          />
+        </div>
+        <div className="portal-login-field">
+          <label htmlFor="cadastro-estado">Estado</label>
+          <input
+            id="cadastro-estado"
+            type="text"
+            value={form.estado}
+            onChange={(e) => setForm({ ...form, estado: e.target.value.toUpperCase() })}
+            maxLength={2}
+            placeholder="Ex.: SP"
+          />
+        </div>
       </div>
-      <div className="portal-login-field">
-        <label htmlFor="cadastro-senha">Senha</label>
-        <input
-          id="cadastro-senha"
-          type="password"
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-          autoComplete="new-password"
-          minLength={6}
-          required
-        />
-      </div>
-      <div className="portal-login-field">
-        <label htmlFor="cadastro-telefone">Telefone (opcional)</label>
-        <input
-          id="cadastro-telefone"
-          type="tel"
-          value={telefone}
-          onChange={(e) => setTelefone(e.target.value)}
-          autoComplete="tel"
-        />
-      </div>
+
       {error && <p className="portal-error">{error}</p>}
       <button type="submit" className="portfolio-link portal-login-submit" disabled={loading}>
         {loading ? 'Criando conta...' : 'Criar conta e continuar'}
       </button>
     </form>
   )
+}
+
+const PRODUTO_LABEL: Record<PendingPlano['produto'], string> = {
+  totalagenda: 'TotalAgenda',
+  totalpousada: 'Total Pousada',
+  totalcontrol: 'TotalControl',
 }
 
 function PendingCheckoutCard({
@@ -259,6 +422,14 @@ function PendingCheckoutCard({
   onDone: () => void
 }) {
   const [nomeEmpresa, setNomeEmpresa] = useState('')
+  const [nomePousada, setNomePousada] = useState('')
+  const [cidade, setCidade] = useState('')
+  const [estado, setEstado] = useState('')
+  const [diaVencimento, setDiaVencimento] = useState('10')
+  const [nomeFantasia, setNomeFantasia] = useState('')
+  const [cnpj, setCnpj] = useState('')
+  const [razaoSocial, setRazaoSocial] = useState('')
+  const [senhaAdmin, setSenhaAdmin] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -267,18 +438,44 @@ function PendingCheckoutCard({
     setLoading(true)
     setError(null)
     try {
-      const planos = await fetchPortalPlanos('totalagenda')
+      const planos = await fetchPortalPlanos(pendingPlano.produto)
       const plano = planos.find((p) => p.nome === pendingPlano.planoNome)
       if (!plano) {
         setError('Não foi possível encontrar este plano. Fale conosco.')
         setLoading(false)
         return
       }
-      const { url } = await createPagamentoCheckoutSession(token, {
-        produto: 'totalagenda',
-        planoId: plano.id,
-        nomeEmpresa,
-      })
+
+      let url: string
+      if (pendingPlano.produto === 'totalagenda') {
+        ;({ url } = await createPagamentoCheckoutSession(token, {
+          produto: 'totalagenda',
+          planoId: plano.id,
+          nomeEmpresa,
+        }))
+      } else if (pendingPlano.produto === 'totalcontrol') {
+        ;({ url } = await createPagamentoCheckoutSession(token, {
+          produto: 'totalcontrol',
+          planoId: plano.id,
+          nomeFantasia,
+          cnpj,
+          razaoSocial: razaoSocial || undefined,
+          senhaAdmin,
+        }))
+      } else {
+        const { estabelecimento } = await createEstabelecimento(token, {
+          nome: nomePousada,
+          cidade,
+          estado,
+          diaVencimento: Number(diaVencimento) || undefined,
+          planoId: plano.id,
+        })
+        ;({ url } = await createPagamentoCheckoutSession(token, {
+          produto: 'totalpousada',
+          estabelecimentoId: estabelecimento.id,
+        }))
+      }
+
       window.location.href = url
     } catch (err) {
       setError(err instanceof PortalApiError ? err.message : 'Não foi possível iniciar o pagamento.')
@@ -289,18 +486,122 @@ function PendingCheckoutCard({
   return (
     <form className="portal-login-card portal-pending-plano" onSubmit={handleConfirmar}>
       <p className="portal-plano-banner">
-        Assinar plano <strong>{pendingPlano.planoNome}</strong> do TotalAgenda
+        Assinar plano <strong>{pendingPlano.planoNome}</strong> do {PRODUTO_LABEL[pendingPlano.produto]}
       </p>
-      <div className="portal-login-field">
-        <label htmlFor="pending-nome-empresa">Nome da empresa/negócio</label>
-        <input
-          id="pending-nome-empresa"
-          type="text"
-          value={nomeEmpresa}
-          onChange={(e) => setNomeEmpresa(e.target.value)}
-          required
-        />
-      </div>
+
+      {pendingPlano.produto === 'totalagenda' && (
+        <div className="portal-login-field">
+          <label htmlFor="pending-nome-empresa">Nome da empresa/negócio</label>
+          <input
+            id="pending-nome-empresa"
+            type="text"
+            value={nomeEmpresa}
+            onChange={(e) => setNomeEmpresa(e.target.value)}
+            required
+          />
+        </div>
+      )}
+
+      {pendingPlano.produto === 'totalpousada' && (
+        <>
+          <div className="portal-login-field">
+            <label htmlFor="pending-nome-pousada">Nome da pousada</label>
+            <input
+              id="pending-nome-pousada"
+              type="text"
+              value={nomePousada}
+              onChange={(e) => setNomePousada(e.target.value)}
+              required
+            />
+          </div>
+          <div className="portal-login-field">
+            <label htmlFor="pending-cidade">Cidade</label>
+            <input
+              id="pending-cidade"
+              type="text"
+              value={cidade}
+              onChange={(e) => setCidade(e.target.value)}
+              required
+            />
+          </div>
+          <div className="portal-login-field">
+            <label htmlFor="pending-estado">Estado (UF)</label>
+            <input
+              id="pending-estado"
+              type="text"
+              value={estado}
+              onChange={(e) => setEstado(e.target.value.toUpperCase())}
+              maxLength={2}
+              placeholder="Ex.: SP"
+              required
+            />
+          </div>
+          <div className="portal-login-field">
+            <label htmlFor="pending-dia-vencimento">Dia de vencimento</label>
+            <input
+              id="pending-dia-vencimento"
+              type="number"
+              min={1}
+              max={31}
+              value={diaVencimento}
+              onChange={(e) => setDiaVencimento(e.target.value)}
+            />
+          </div>
+        </>
+      )}
+
+      {pendingPlano.produto === 'totalcontrol' && (
+        <>
+          <div className="portal-login-field">
+            <label htmlFor="pending-nome-fantasia">Nome fantasia</label>
+            <input
+              id="pending-nome-fantasia"
+              type="text"
+              value={nomeFantasia}
+              onChange={(e) => setNomeFantasia(e.target.value)}
+              required
+            />
+          </div>
+          <div className="portal-login-field">
+            <label htmlFor="pending-cnpj">CNPJ</label>
+            <input
+              id="pending-cnpj"
+              type="text"
+              value={cnpj}
+              onChange={(e) => setCnpj(maskCnpj(e.target.value))}
+              inputMode="numeric"
+              maxLength={18}
+              required
+            />
+          </div>
+          <div className="portal-login-field">
+            <label htmlFor="pending-razao-social">Razão social (opcional)</label>
+            <input
+              id="pending-razao-social"
+              type="text"
+              value={razaoSocial}
+              onChange={(e) => setRazaoSocial(e.target.value)}
+            />
+          </div>
+          <div className="portal-login-field">
+            <label htmlFor="pending-senha-admin">Senha de acesso ao TotalControl</label>
+            <input
+              id="pending-senha-admin"
+              type="password"
+              value={senhaAdmin}
+              onChange={(e) => setSenhaAdmin(e.target.value)}
+              autoComplete="new-password"
+              minLength={6}
+              required
+            />
+          </div>
+          <p className="portal-login-hint">
+            Essa senha é só pra administrar sua loja dentro do sistema de PDV do TotalControl —
+            separada da senha que você usa aqui no portal.
+          </p>
+        </>
+      )}
+
       {error && <p className="portal-error">{error}</p>}
       <div className="portal-pending-plano-actions">
         <button type="submit" className="portfolio-link portal-login-submit" disabled={loading}>

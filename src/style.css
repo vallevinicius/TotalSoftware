@@ -2070,6 +2070,27 @@ footer {
   outline: none;
   border-color: var(--black);
 }
+.portal-cadastro-form {
+  max-width: 520px;
+}
+.portal-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.portal-form-section + .portal-form-section {
+  margin-top: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--gray-200);
+}
+.portal-form-section-title {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-600);
+  margin: 0;
+}
 .portal-error {
   font-size: 0.85rem;
   color: #b91c1c;

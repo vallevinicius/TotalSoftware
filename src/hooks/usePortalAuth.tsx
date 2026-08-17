@@ -1,5 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { portalLogin, portalCadastro, portalMe, PortalApiError, type PortalMeResponse } from '../lib/portalApi'
+import {
+  portalLogin,
+  portalCadastro,
+  portalMe,
+  PortalApiError,
+  type PortalCadastroParams,
+  type PortalMeResponse,
+} from '../lib/portalApi'
 
 const TOKEN_STORAGE_KEY = 'ts_portal_token'
 
@@ -9,7 +16,7 @@ interface PortalAuthValue {
   loading: boolean
   error: string | null
   login: (email: string, senha: string) => Promise<boolean>
-  cadastro: (params: { nome: string; email: string; senha: string; telefone?: string }) => Promise<boolean>
+  cadastro: (params: PortalCadastroParams) => Promise<boolean>
   logout: () => void
   refresh: () => Promise<void>
 }
@@ -64,7 +71,7 @@ export function PortalAuthProvider({ children }: { children: ReactNode }) {
   }, [loadMe])
 
   const cadastro = useCallback(
-    async (params: { nome: string; email: string; senha: string; telefone?: string }) => {
+    async (params: PortalCadastroParams) => {
       setLoading(true)
       setError(null)
       try {

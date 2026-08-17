@@ -49,7 +49,6 @@ export const PRODUCTS: Product[] = [
     themeClassName: "theme-pousada",
     accentColor: "#3b82f6",
     pricingDescription: "Escolha o plano ideal para a sua pousada.",
-    // TODO: preços de exemplo — confirmar valores reais antes de publicar
     pricingPlans: [
       {
         name: "Essencial",
@@ -58,8 +57,8 @@ export const PRODUCTS: Product[] = [
         period: "mês",
         description:
           "Para pousadas pequenas começando a organizar as reservas.",
-        buttonText: "Falar com a gente",
-        href: "/fale-conosco",
+        buttonText: "Assinar",
+        href: "/portal?produto=totalpousada&plano=Essencial",
         features: [
           "Controle de reservas",
           "Calendário de disponibilidade",
@@ -74,8 +73,8 @@ export const PRODUCTS: Product[] = [
         period: "mês",
         description:
           "Para pousadas que querem evitar overbooking e controlar o financeiro.",
-        buttonText: "Falar com a gente",
-        href: "/fale-conosco",
+        buttonText: "Assinar",
+        href: "/portal?produto=totalpousada&plano=Profissional",
         isPopular: true,
         features: [
           "Tudo do plano Essencial",
@@ -90,8 +89,8 @@ export const PRODUCTS: Product[] = [
         yearlyPrice: "199",
         period: "mês",
         description: "Para redes de pousadas com equipe e operação maiores.",
-        buttonText: "Falar com a gente",
-        href: "/fale-conosco",
+        buttonText: "Assinar",
+        href: "/portal?produto=totalpousada&plano=Empresarial",
         features: [
           "Tudo do plano Profissional",
           "Gestão de equipe e permissões",
@@ -192,8 +191,8 @@ export const PRODUCTS: Product[] = [
         yearlyPrice: "59.9",
         period: "mês",
         description: "Comece com 14 dias grátis, depois R$ 59,90/mês.",
-        buttonText: "Falar com a gente",
-        href: "/fale-conosco",
+        buttonText: "Assinar",
+        href: "/portal?produto=totalcontrol&plano=Starter",
         features: [
           "Teste grátis por 14 dias",
           "Ponto de venda (PDV)",
@@ -208,8 +207,8 @@ export const PRODUCTS: Product[] = [
         yearlyPrice: "129.9",
         period: "mês",
         description: "Para negócios com equipe de vendas e comissionamento.",
-        buttonText: "Falar com a gente",
-        href: "/fale-conosco",
+        buttonText: "Assinar",
+        href: "/portal?produto=totalcontrol&plano=Pro",
         isPopular: true,
         features: [
           "Tudo do plano Starter",
@@ -225,8 +224,8 @@ export const PRODUCTS: Product[] = [
         period: "mês (1ª loja)",
         description:
           "Para redes com mais de uma loja. A partir de R$ 249,90 (1ª loja) + R$ 79,90 por loja adicional.",
-        buttonText: "Falar com a gente",
-        href: "/fale-conosco",
+        buttonText: "Assinar",
+        href: "/portal?produto=totalcontrol&plano=Enterprise",
         features: [
           "Tudo do plano Pro",
           "Múltiplas lojas",

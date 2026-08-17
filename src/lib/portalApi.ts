@@ -80,12 +80,26 @@ export async function portalLogin(
   return response.json()
 }
 
-export async function portalCadastro(params: {
+export interface PortalCadastroParams {
   nome: string
   email: string
   senha: string
   telefone?: string
-}): Promise<{ token: string; cliente: PortalCliente }> {
+  cpf?: string
+  dataNascimento?: string
+  cep?: string
+  rua?: string
+  numero?: string
+  complemento?: string
+  bairro?: string
+  cidade?: string
+  estado?: string
+  cargo?: string
+}
+
+export async function portalCadastro(
+  params: PortalCadastroParams,
+): Promise<{ token: string; cliente: PortalCliente }> {
   const response = await fetch(`${requireApiUrl()}/api/portal/cadastro`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -103,7 +117,9 @@ export interface PortalPlano {
   precoCents: number
 }
 
-export async function fetchPortalPlanos(produto: 'totalpousada' | 'totalagenda'): Promise<PortalPlano[]> {
+export async function fetchPortalPlanos(
+  produto: 'totalpousada' | 'totalagenda' | 'totalcontrol',
+): Promise<PortalPlano[]> {
   const response = await fetch(
     `${requireApiUrl()}/api/portal/planos?produto=${encodeURIComponent(produto)}`,
   )
@@ -112,6 +128,29 @@ export async function fetchPortalPlanos(produto: 'totalpousada' | 'totalagenda')
   }
   const data = await response.json()
   return data.planos
+}
+
+export interface PortalEstabelecimentoCriado {
+  id: number
+  nome: string
+  cidade: string
+  estado: string
+  valorMensalidade: number
+}
+
+export async function createEstabelecimento(
+  token: string,
+  params: { nome: string; cidade: string; estado: string; diaVencimento?: number; planoId: number },
+): Promise<{ estabelecimento: PortalEstabelecimentoCriado }> {
+  const response = await fetch(`${requireApiUrl()}/api/portal/estabelecimento`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(params),
+  })
+  if (!response.ok) {
+    throw new PortalApiError(await parseError(response, 'Não foi possível cadastrar sua pousada.'))
+  }
+  return response.json()
 }
 
 export async function portalMe(token: string): Promise<PortalMeResponse> {
@@ -129,6 +168,14 @@ export async function portalMe(token: string): Promise<PortalMeResponse> {
 export type CheckoutSessionParams =
   | { produto?: 'totalpousada'; estabelecimentoId: number }
   | { produto: 'totalagenda'; planoId: number; nomeEmpresa: string }
+  | {
+      produto: 'totalcontrol'
+      planoId: number
+      nomeFantasia: string
+      cnpj: string
+      razaoSocial?: string
+      senhaAdmin: string
+    }
 
 export async function createPagamentoCheckoutSession(
   token: string,
@@ -137,7 +184,16 @@ export async function createPagamentoCheckoutSession(
   const body =
     params.produto === 'totalagenda'
       ? { produto: params.produto, planoId: params.planoId, nomeEmpresa: params.nomeEmpresa }
-      : { produto: params.produto ?? 'totalpousada', estabelecimentoId: params.estabelecimentoId }
+      : params.produto === 'totalcontrol'
+        ? {
+            produto: params.produto,
+            planoId: params.planoId,
+            nomeFantasia: params.nomeFantasia,
+            cnpj: params.cnpj,
+            razaoSocial: params.razaoSocial,
+            senhaAdmin: params.senhaAdmin,
+          }
+        : { produto: params.produto ?? 'totalpousada', estabelecimentoId: params.estabelecimentoId }
 
   const response = await fetch(`${requireApiUrl()}/api/portal/pagamento/checkout-session`, {
     method: 'POST',
