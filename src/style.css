@@ -320,6 +320,18 @@ nav.nav-open .nav-toggle-fx,
   z-index: 1;
   margin-top: 2rem;
 }
+
+.hero-center {
+  justify-content: center;
+}
+
+.not-found-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 .hero-desc {
   max-width: 480px;
   font-size: 1rem;

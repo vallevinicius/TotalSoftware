@@ -11,6 +11,7 @@ import Clientes from './pages/Clientes'
 import Equipe from './pages/Equipe'
 import FaleConosco from './pages/FaleConosco'
 import Portal from './pages/Portal'
+import NotFound from './pages/NotFound'
 import { PortalAuthProvider } from './hooks/usePortalAuth'
 
 export default function App() {
@@ -35,6 +36,7 @@ export default function App() {
             </PortalAuthProvider>
           }
         />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   )
