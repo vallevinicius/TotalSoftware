@@ -12,7 +12,7 @@ const NAV_LINKS = [
   { to: '/clientes', label: 'Clientes' },
   { to: '/equipe', label: 'Equipe' },
   { to: '/fale-conosco', label: 'Fale Conosco' },
-  { to: '/portal', label: 'Já sou cliente' },
+  { to: '/portal', label: 'Área do cliente' },
 ]
 
 export default function Navbar() {
@@ -71,15 +71,32 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="fixed inset-0 z-99 flex items-center justify-center overflow-y-auto bg-black/95 backdrop-blur-sm"
+            className="fixed inset-0 z-99 flex flex-col items-center overflow-y-auto bg-black/95 backdrop-blur-sm"
           >
-            <ul className="flex w-full flex-col items-center justify-center gap-1 px-7 py-24">
+            <div className="flex items-center justify-center gap-5 pt-28">
+              <Link
+                to="/portal"
+                onClick={() => setOpen(false)}
+                className="cursor-none font-mono text-[0.7rem] uppercase tracking-[0.15em] text-white/60 transition-colors hover:text-white"
+              >
+                Login
+              </Link>
+              <Link
+                to="/portal?modo=cadastro"
+                onClick={() => setOpen(false)}
+                className="cursor-none border border-white/30 px-4 py-2 font-mono text-[0.7rem] uppercase tracking-[0.15em] text-white transition-colors hover:border-white hover:bg-white hover:text-black"
+              >
+                Cadastre-se
+              </Link>
+            </div>
+
+            <ul className="flex w-full flex-col items-center justify-center gap-1 px-7 py-16">
               {NAV_LINKS.map((item, index) => (
                 <li
                   className="relative flex cursor-none flex-col items-center overflow-visible"
                   key={item.to}
                 >
-                  <Link to={item.to} className="relative flex items-start">
+                  <Link to={item.to} onClick={() => setOpen(false)} className="relative flex items-start">
                     <TextRoll
                       center
                       className="text-2xl font-extrabold uppercase leading-[0.85] tracking-[-0.03em] text-white transition-colors sm:text-3xl lg:text-4xl"

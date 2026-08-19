@@ -169,6 +169,21 @@ nav.scrolled {
   border-bottom-color: var(--gray-200);
 }
 
+/* Com o menu fullscreen aberto, a nav vira transparente e se funde com o
+   fundo preto do overlay em vez de deixar uma faixa cinza clara por cima —
+   so a logo (agora branca) e o botao "Fechar" continuam visiveis. */
+nav.nav-open {
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom-color: transparent;
+}
+nav.nav-open .logo {
+  color: var(--white);
+}
+nav.nav-open .logo-dot {
+  background: var(--white);
+}
+
 .logo {
   font-size: 1.1rem;
   font-weight: 800;
@@ -2056,7 +2071,8 @@ footer {
   text-transform: uppercase;
   color: var(--gray-400);
 }
-.portal-login-field input {
+.portal-login-field input,
+.portal-login-field select {
   font-family: var(--font-display);
   font-size: 0.95rem;
   padding: 0.75rem 0.9rem;
@@ -2066,7 +2082,8 @@ footer {
   color: var(--black);
   transition: border-color 0.2s ease;
 }
-.portal-login-field input:focus {
+.portal-login-field input:focus,
+.portal-login-field select:focus {
   outline: none;
   border-color: var(--black);
 }
@@ -2169,6 +2186,22 @@ footer {
   color: var(--gray-600);
 }
 
+.portal-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  padding: 3rem 2rem;
+}
+.portal-empty-state p {
+  max-width: 440px;
+  color: var(--gray-600);
+  line-height: 1.6;
+}
+
 .portal-dashboard {
   max-width: 900px;
   margin: 0 auto;
@@ -2222,6 +2255,18 @@ footer {
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-bottom: 1.25rem;
+}
+
+.portal-section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.portal-section-header-row h4 {
+  margin-bottom: 0;
 }
 
 .portal-produto-card {

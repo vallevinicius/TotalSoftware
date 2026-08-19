@@ -8,7 +8,7 @@ import {
   type PortalMeResponse,
 } from '../lib/portalApi'
 
-const TOKEN_STORAGE_KEY = 'ts_portal_token'
+export const TOKEN_STORAGE_KEY = 'ts_portal_token'
 
 interface PortalAuthValue {
   token: string | null

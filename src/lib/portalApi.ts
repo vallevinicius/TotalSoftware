@@ -167,7 +167,14 @@ export async function portalMe(token: string): Promise<PortalMeResponse> {
 
 export type CheckoutSessionParams =
   | { produto?: 'totalpousada'; estabelecimentoId: number }
-  | { produto: 'totalagenda'; planoId: number; nomeEmpresa: string }
+  | {
+      produto: 'totalagenda'
+      planoId: number
+      nomeEmpresa: string
+      nomeFantasia: string
+      cnpj: string
+      nomeProprietario: string
+    }
   | {
       produto: 'totalcontrol'
       planoId: number
@@ -183,7 +190,14 @@ export async function createPagamentoCheckoutSession(
 ): Promise<{ url: string }> {
   const body =
     params.produto === 'totalagenda'
-      ? { produto: params.produto, planoId: params.planoId, nomeEmpresa: params.nomeEmpresa }
+      ? {
+          produto: params.produto,
+          planoId: params.planoId,
+          nomeEmpresa: params.nomeEmpresa,
+          nomeFantasia: params.nomeFantasia,
+          cnpj: params.cnpj,
+          nomeProprietario: params.nomeProprietario,
+        }
       : params.produto === 'totalcontrol'
         ? {
             produto: params.produto,

@@ -11,6 +11,7 @@ import {
   type PortalEstabelecimento,
   type PortalMensalidade,
   type PortalMeResponse,
+  type PortalPlano,
 } from '../lib/portalApi'
 import { buscarEnderecoPorCep, maskCep, maskCnpj, maskCpf, maskTelefone } from '../lib/masks'
 
@@ -51,10 +52,11 @@ function StatusBadge({ status }: { status: PortalMensalidade['status'] }) {
 }
 
 export default function Portal() {
-  useDocumentTitle('Já sou cliente | Total Software')
+  useDocumentTitle('Área do cliente | Total Software')
   const { token, data, loading, error, login, cadastro, logout, refresh } = usePortalAuth()
   const [checkoutBanner, setCheckoutBanner] = useState<'success' | 'cancelled' | null>(null)
   const [pendingPlano, setPendingPlano] = useState<PendingPlano | null>(null)
+  const [authMode, setAuthMode] = useState<'login' | 'cadastro'>('login')
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -77,6 +79,12 @@ export default function Portal() {
       changed = true
     }
 
+    if (params.get('modo') === 'cadastro') {
+      setAuthMode('cadastro')
+      params.delete('modo')
+      changed = true
+    }
+
     if (changed) {
       const newSearch = params.toString()
       window.history.replaceState(null, '', window.location.pathname + (newSearch ? `?${newSearch}` : ''))
@@ -87,9 +95,9 @@ export default function Portal() {
   return (
     <section className="page-content">
       <div className="section-header centered">
-        <span className="section-number">Área do cliente</span>
+        <span className="section-number">Portal</span>
         <div>
-          <h2 className="section-title">Já sou cliente</h2>
+          <h2 className="section-title">Área do cliente</h2>
           <p className="section-sub">
             Acompanhe seus produtos e a situação da sua mensalidade.
           </p>
@@ -105,17 +113,14 @@ export default function Portal() {
       )}
 
       {!token || (!data && !loading) ? (
-        pendingPlano ? (
-          <PortalAuthGate
-            pendingPlano={pendingPlano}
-            loading={loading}
-            error={error}
-            onLogin={login}
-            onCadastro={cadastro}
-          />
-        ) : (
-          <PortalLoginForm loading={loading} error={error} onSubmit={login} />
-        )
+        <PortalAuthGate
+          pendingPlano={pendingPlano}
+          initialTab={pendingPlano ? 'cadastro' : authMode}
+          loading={loading}
+          error={error}
+          onLogin={login}
+          onCadastro={cadastro}
+        />
       ) : loading && !data ? (
         <p className="portal-loading">Carregando seus dados...</p>
       ) : data ? (
@@ -127,7 +132,7 @@ export default function Portal() {
               onDone={() => setPendingPlano(null)}
             />
           )}
-          <PortalDashboard data={data} onLogout={logout} />
+          <PortalDashboard token={token!} data={data} onLogout={logout} />
         </>
       ) : null}
     </section>
@@ -136,24 +141,29 @@ export default function Portal() {
 
 function PortalAuthGate({
   pendingPlano,
+  initialTab,
   loading,
   error,
   onLogin,
   onCadastro,
 }: {
-  pendingPlano: PendingPlano
+  pendingPlano: PendingPlano | null
+  initialTab: 'cadastro' | 'login'
   loading: boolean
   error: string | null
   onLogin: (email: string, senha: string) => Promise<boolean>
   onCadastro: (params: PortalCadastroParams) => Promise<boolean>
 }) {
-  const [tab, setTab] = useState<'cadastro' | 'login'>('cadastro')
+  const [tab, setTab] = useState<'cadastro' | 'login'>(initialTab)
 
   return (
     <div className="portal-auth-gate">
-      <p className="portal-plano-banner">
-        Plano <strong>{pendingPlano.planoNome}</strong> selecionado — crie sua conta ou entre para continuar.
-      </p>
+      {pendingPlano && (
+        <p className="portal-plano-banner">
+          Plano <strong>{pendingPlano.planoNome}</strong> do {PRODUTO_LABEL[pendingPlano.produto]} selecionado. Crie
+          sua conta ou entre para continuar.
+        </p>
+      )}
       <div className="portal-auth-tabs">
         <button
           type="button"
@@ -428,6 +438,7 @@ function PendingCheckoutCard({
   const [diaVencimento, setDiaVencimento] = useState('10')
   const [nomeFantasia, setNomeFantasia] = useState('')
   const [cnpj, setCnpj] = useState('')
+  const [nomeProprietario, setNomeProprietario] = useState('')
   const [razaoSocial, setRazaoSocial] = useState('')
   const [senhaAdmin, setSenhaAdmin] = useState('')
   const [loading, setLoading] = useState(false)
@@ -452,6 +463,9 @@ function PendingCheckoutCard({
           produto: 'totalagenda',
           planoId: plano.id,
           nomeEmpresa,
+          nomeFantasia,
+          cnpj,
+          nomeProprietario,
         }))
       } else if (pendingPlano.produto === 'totalcontrol') {
         ;({ url } = await createPagamentoCheckoutSession(token, {
@@ -490,16 +504,50 @@ function PendingCheckoutCard({
       </p>
 
       {pendingPlano.produto === 'totalagenda' && (
-        <div className="portal-login-field">
-          <label htmlFor="pending-nome-empresa">Nome da empresa/negócio</label>
-          <input
-            id="pending-nome-empresa"
-            type="text"
-            value={nomeEmpresa}
-            onChange={(e) => setNomeEmpresa(e.target.value)}
-            required
-          />
-        </div>
+        <>
+          <div className="portal-login-field">
+            <label htmlFor="pending-nome-fantasia-agenda">Nome fantasia</label>
+            <input
+              id="pending-nome-fantasia-agenda"
+              type="text"
+              value={nomeFantasia}
+              onChange={(e) => setNomeFantasia(e.target.value)}
+              required
+            />
+          </div>
+          <div className="portal-login-field">
+            <label htmlFor="pending-nome-empresa">Nome da empresa</label>
+            <input
+              id="pending-nome-empresa"
+              type="text"
+              value={nomeEmpresa}
+              onChange={(e) => setNomeEmpresa(e.target.value)}
+              required
+            />
+          </div>
+          <div className="portal-login-field">
+            <label htmlFor="pending-cnpj-agenda">CNPJ</label>
+            <input
+              id="pending-cnpj-agenda"
+              type="text"
+              value={cnpj}
+              onChange={(e) => setCnpj(maskCnpj(e.target.value))}
+              inputMode="numeric"
+              maxLength={18}
+              required
+            />
+          </div>
+          <div className="portal-login-field">
+            <label htmlFor="pending-nome-proprietario">Nome completo do proprietário</label>
+            <input
+              id="pending-nome-proprietario"
+              type="text"
+              value={nomeProprietario}
+              onChange={(e) => setNomeProprietario(e.target.value)}
+              required
+            />
+          </div>
+        </>
       )}
 
       {pendingPlano.produto === 'totalpousada' && (
@@ -669,13 +717,16 @@ function PortalLoginForm({
 }
 
 function PortalDashboard({
+  token,
   data,
   onLogout,
 }: {
+  token: string
   data: PortalMeResponse
   onLogout: () => void
 }) {
   const [showEstabelecimentosPopup, setShowEstabelecimentosPopup] = useState(false)
+  const [showNovoEstabelecimento, setShowNovoEstabelecimento] = useState(false)
   const hasEstabelecimentos = data.estabelecimentos.length > 0
 
   return (
@@ -717,19 +768,45 @@ function PortalDashboard({
       )}
 
       {!hasEstabelecimentos ? (
-        <p className="portal-loading">
-          Nenhum estabelecimento vinculado a este login ainda. Fale com a Total Software se
-          isso não parecer certo.
-        </p>
+        !showNovoEstabelecimento && (
+          <div className="portal-empty-state">
+            <p>
+              Nenhum estabelecimento vinculado a este login ainda. Fale com a Total Software se
+              isso não parecer certo.
+            </p>
+            <button
+              type="button"
+              className="portfolio-link portal-login-submit"
+              onClick={() => setShowNovoEstabelecimento(true)}
+            >
+              Cadastrar estabelecimento
+            </button>
+          </div>
+        )
       ) : (
         <div className="portal-section">
-          <h4>Seus estabelecimentos</h4>
+          <div className="portal-section-header-row">
+            <h4>Seus estabelecimentos</h4>
+            {!showNovoEstabelecimento && (
+              <button
+                type="button"
+                className="detail-page-back"
+                onClick={() => setShowNovoEstabelecimento(true)}
+              >
+                + Cadastrar estabelecimento
+              </button>
+            )}
+          </div>
           <div className="portal-estabelecimentos-list">
             {data.estabelecimentos.map((estabelecimento) => (
               <EstabelecimentoCard key={estabelecimento.id} estabelecimento={estabelecimento} />
             ))}
           </div>
         </div>
+      )}
+
+      {showNovoEstabelecimento && (
+        <NovoEstabelecimentoForm token={token} onCancel={() => setShowNovoEstabelecimento(false)} />
       )}
 
       {data.produtos.length > 0 && (
@@ -752,6 +829,133 @@ function PortalDashboard({
         </div>
       )}
     </div>
+  )
+}
+
+// Cadastro de estabelecimento (Total Pousada) direto pelo dashboard, sem
+// precisar voltar pra pagina de precos — usado quando o cliente ja tem
+// conta mas ainda nao tem nenhuma pousada vinculada (ou quer adicionar mais
+// uma). Pede o plano (nao ha um pendingPlano vindo da URL aqui) e os
+// mesmos dados de sempre, depois cria o estabelecimento e manda pro
+// checkout da Stripe.
+function NovoEstabelecimentoForm({ token, onCancel }: { token: string; onCancel: () => void }) {
+  const [planos, setPlanos] = useState<PortalPlano[] | null>(null)
+  const [planoId, setPlanoId] = useState<number | null>(null)
+  const [nome, setNome] = useState('')
+  const [cidade, setCidade] = useState('')
+  const [estado, setEstado] = useState('')
+  const [diaVencimento, setDiaVencimento] = useState('10')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchPortalPlanos('totalpousada')
+      .then((result) => {
+        setPlanos(result)
+        setPlanoId((current) => current ?? result[0]?.id ?? null)
+      })
+      .catch(() => setError('Não foi possível carregar os planos. Tente novamente.'))
+  }, [])
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!planoId) return
+    setLoading(true)
+    setError(null)
+    try {
+      const { estabelecimento } = await createEstabelecimento(token, {
+        nome,
+        cidade,
+        estado,
+        diaVencimento: Number(diaVencimento) || undefined,
+        planoId,
+      })
+      const { url } = await createPagamentoCheckoutSession(token, {
+        produto: 'totalpousada',
+        estabelecimentoId: estabelecimento.id,
+      })
+      window.location.href = url
+    } catch (err) {
+      setError(err instanceof PortalApiError ? err.message : 'Não foi possível cadastrar o estabelecimento.')
+      setLoading(false)
+    }
+  }
+
+  return (
+    <form className="portal-login-card portal-pending-plano" onSubmit={handleSubmit}>
+      <p className="portal-plano-banner">Cadastrar estabelecimento do Total Pousada</p>
+
+      <div className="portal-login-field">
+        <label htmlFor="novo-estab-plano">Plano</label>
+        <select
+          id="novo-estab-plano"
+          value={planoId ?? ''}
+          onChange={(e) => setPlanoId(Number(e.target.value))}
+          required
+          disabled={!planos}
+        >
+          {!planos && <option value="">Carregando planos...</option>}
+          {planos?.map((plano) => (
+            <option key={plano.id} value={plano.id}>
+              {plano.nome} — {formatMoney(plano.precoCents / 100)}/mês
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="portal-login-field">
+        <label htmlFor="novo-estab-nome">Nome da pousada</label>
+        <input
+          id="novo-estab-nome"
+          type="text"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          required
+        />
+      </div>
+      <div className="portal-login-field">
+        <label htmlFor="novo-estab-cidade">Cidade</label>
+        <input
+          id="novo-estab-cidade"
+          type="text"
+          value={cidade}
+          onChange={(e) => setCidade(e.target.value)}
+          required
+        />
+      </div>
+      <div className="portal-login-field">
+        <label htmlFor="novo-estab-estado">Estado (UF)</label>
+        <input
+          id="novo-estab-estado"
+          type="text"
+          value={estado}
+          onChange={(e) => setEstado(e.target.value.toUpperCase())}
+          maxLength={2}
+          placeholder="Ex.: SP"
+          required
+        />
+      </div>
+      <div className="portal-login-field">
+        <label htmlFor="novo-estab-dia-vencimento">Dia de vencimento</label>
+        <input
+          id="novo-estab-dia-vencimento"
+          type="number"
+          min={1}
+          max={31}
+          value={diaVencimento}
+          onChange={(e) => setDiaVencimento(e.target.value)}
+        />
+      </div>
+
+      {error && <p className="portal-error">{error}</p>}
+      <div className="portal-pending-plano-actions">
+        <button type="submit" className="portfolio-link portal-login-submit" disabled={loading || !planoId}>
+          {loading ? 'Enviando...' : 'Cadastrar e ir para pagamento'}
+        </button>
+        <button type="button" className="detail-page-back" onClick={onCancel} disabled={loading}>
+          Cancelar
+        </button>
+      </div>
+    </form>
   )
 }
 
