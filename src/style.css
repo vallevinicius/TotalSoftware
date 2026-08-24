@@ -2553,6 +2553,99 @@ footer {
   border-color: #b91c1c;
 }
 
+.portal-confirm {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+.portal-confirm-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: #16a34a;
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  padding: 1.1rem 1.5rem;
+  border-radius: 2px;
+  text-align: center;
+}
+.portal-confirm-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+.portal-confirm-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+}
+.portal-confirm-numero {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.portal-confirm-email {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+}
+.portal-confirm-email strong {
+  color: var(--black);
+}
+.portal-confirm-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 3rem;
+}
+.portal-confirm-col h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 1rem;
+}
+.portal-confirm-col-title-spaced {
+  margin-top: 2rem;
+}
+.portal-confirm-col > p {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+.portal-confirm-col .portal-login-submit {
+  margin-bottom: 0.5rem;
+}
+.portal-confirm-info {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.portal-confirm-info p {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  line-height: 1.6;
+}
+.portal-confirm-info p strong {
+  color: var(--black);
+}
+@media (max-width: 700px) {
+  .portal-confirm-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
 @media (max-width: 600px) {
   .portal-login-card {
     padding: 1.75rem;

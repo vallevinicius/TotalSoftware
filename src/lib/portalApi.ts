@@ -222,6 +222,34 @@ export async function createPagamentoCheckoutSession(
   return response.json()
 }
 
+export interface ConfirmacaoPagamento {
+  numero: string
+  produto: 'totalpousada' | 'totalagenda' | 'totalcontrol'
+  planoNome: string | null
+  detalhe: string | null
+  valor: number | null
+  status: 'ativa' | 'pendente' | 'processando'
+  dataAssinatura: string
+  clienteEmail: string | null
+  formaPagamento: { bandeira: string; final4: string } | null
+}
+
+export async function fetchConfirmacaoPagamento(
+  token: string,
+  sessionId: string,
+): Promise<ConfirmacaoPagamento> {
+  const response = await fetch(
+    `${requireApiUrl()}/api/portal/pagamento/confirmacao?sessionId=${encodeURIComponent(sessionId)}`,
+    { headers: { Authorization: `Bearer ${token}` } },
+  )
+  if (!response.ok) {
+    throw new PortalApiError(
+      await parseError(response, 'Não foi possível carregar a confirmação da assinatura.'),
+    )
+  }
+  return response.json()
+}
+
 export async function createPagamentoPortalSession(token: string): Promise<{ url: string }> {
   const response = await fetch(`${requireApiUrl()}/api/portal/pagamento/portal-session`, {
     method: 'POST',

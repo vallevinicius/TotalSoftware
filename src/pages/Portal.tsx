@@ -5,8 +5,10 @@ import {
   createEstabelecimento,
   createPagamentoCheckoutSession,
   createPagamentoPortalSession,
+  fetchConfirmacaoPagamento,
   fetchPortalPlanos,
   PortalApiError,
+  type ConfirmacaoPagamento,
   type PortalCadastroParams,
   type PortalEstabelecimento,
   type PortalMensalidade,
@@ -55,6 +57,7 @@ export default function Portal() {
   useDocumentTitle('Área do cliente | Total Software')
   const { token, data, loading, error, login, cadastro, logout, refresh } = usePortalAuth()
   const [checkoutBanner, setCheckoutBanner] = useState<'success' | 'cancelled' | null>(null)
+  const [confirmSessionId, setConfirmSessionId] = useState<string | null>(null)
   const [pendingPlano, setPendingPlano] = useState<PendingPlano | null>(null)
   const [authMode, setAuthMode] = useState<'login' | 'cadastro'>('login')
 
@@ -64,9 +67,15 @@ export default function Portal() {
 
     const checkout = params.get('checkout')
     if (checkout === 'success' || checkout === 'cancelled') {
-      setCheckoutBanner(checkout)
+      const sessionId = params.get('session_id')
+      if (checkout === 'success' && sessionId) {
+        setConfirmSessionId(sessionId)
+      } else {
+        setCheckoutBanner(checkout)
+      }
       if (token) refresh()
       params.delete('checkout')
+      params.delete('session_id')
       changed = true
     }
 
@@ -104,38 +113,155 @@ export default function Portal() {
         </div>
       </div>
 
-      {checkoutBanner && (
-        <p className={`portal-checkout-banner portal-checkout-banner-${checkoutBanner}`}>
-          {checkoutBanner === 'success'
-            ? 'Pagamento automático ativado com sucesso.'
-            : 'Ativação cancelada. Você pode tentar novamente quando quiser.'}
-        </p>
-      )}
-
-      {!token || (!data && !loading) ? (
-        <PortalAuthGate
-          pendingPlano={pendingPlano}
-          initialTab={pendingPlano ? 'cadastro' : authMode}
-          loading={loading}
-          error={error}
-          onLogin={login}
-          onCadastro={cadastro}
+      {confirmSessionId && token ? (
+        <PagamentoConfirmado
+          token={token}
+          sessionId={confirmSessionId}
+          onContinuar={() => setConfirmSessionId(null)}
         />
-      ) : loading && !data ? (
-        <p className="portal-loading">Carregando seus dados...</p>
-      ) : data ? (
+      ) : (
         <>
-          {pendingPlano && token && (
-            <PendingCheckoutCard
-              token={token}
-              pendingPlano={pendingPlano}
-              onDone={() => setPendingPlano(null)}
-            />
+          {checkoutBanner && (
+            <p className={`portal-checkout-banner portal-checkout-banner-${checkoutBanner}`}>
+              {checkoutBanner === 'success'
+                ? 'Pagamento automático ativado com sucesso.'
+                : 'Ativação cancelada. Você pode tentar novamente quando quiser.'}
+            </p>
           )}
-          <PortalDashboard token={token!} data={data} onLogout={logout} />
+
+          {!token || (!data && !loading) ? (
+            <PortalAuthGate
+              pendingPlano={pendingPlano}
+              initialTab={pendingPlano ? 'cadastro' : authMode}
+              loading={loading}
+              error={error}
+              onLogin={login}
+              onCadastro={cadastro}
+            />
+          ) : loading && !data ? (
+            <p className="portal-loading">Carregando seus dados...</p>
+          ) : data ? (
+            <>
+              {pendingPlano && token && (
+                <PendingCheckoutCard
+                  token={token}
+                  pendingPlano={pendingPlano}
+                  onDone={() => setPendingPlano(null)}
+                />
+              )}
+              <PortalDashboard token={token!} data={data} onLogout={logout} />
+            </>
+          ) : null}
         </>
-      ) : null}
+      )}
     </section>
+  )
+}
+
+const CONFIRM_STATUS_LABEL: Record<ConfirmacaoPagamento['status'], string> = {
+  ativa: 'Ativa',
+  pendente: 'Pagamento pendente',
+  processando: 'Processando',
+}
+
+function PagamentoConfirmado({
+  token,
+  sessionId,
+  onContinuar,
+}: {
+  token: string
+  sessionId: string
+  onContinuar: () => void
+}) {
+  const [confirmacao, setConfirmacao] = useState<ConfirmacaoPagamento | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchConfirmacaoPagamento(token, sessionId)
+      .then(setConfirmacao)
+      .catch((err) =>
+        setError(err instanceof PortalApiError ? err.message : 'Não foi possível carregar a confirmação da assinatura.'),
+      )
+  }, [token, sessionId])
+
+  if (error) {
+    return (
+      <div className="portal-confirm">
+        <p className="portal-error">{error}</p>
+        <button type="button" className="portfolio-link portal-login-submit" onClick={onContinuar}>
+          Ir para o portal
+        </button>
+      </div>
+    )
+  }
+
+  if (!confirmacao) {
+    return <p className="portal-loading">Confirmando sua assinatura...</p>
+  }
+
+  return (
+    <div className="portal-confirm">
+      <div className="portal-confirm-banner">✓ Sua assinatura foi realizada com sucesso!</div>
+
+      <div className="portal-confirm-header">
+        <p className="portal-confirm-label">Número da assinatura</p>
+        <p className="portal-confirm-numero">{confirmacao.numero}</p>
+        {confirmacao.clienteEmail && (
+          <p className="portal-confirm-email">
+            A confirmação foi enviada para o e-mail: <strong>{confirmacao.clienteEmail}</strong>
+          </p>
+        )}
+      </div>
+
+      <div className="portal-confirm-grid">
+        <div className="portal-confirm-col">
+          <h4>Informações da assinatura</h4>
+          <span
+            className={`portal-status ${confirmacao.status === 'ativa' ? 'portal-status-pago' : 'portal-status-pendente'}`}
+          >
+            {CONFIRM_STATUS_LABEL[confirmacao.status]}
+          </span>
+          <div className="portal-confirm-info">
+            {confirmacao.valor != null && (
+              <p>
+                <strong>Valor mensal:</strong> {formatMoney(confirmacao.valor)}
+              </p>
+            )}
+            <p>
+              <strong>Produto:</strong> {PRODUTO_LABEL[confirmacao.produto]}
+              {confirmacao.planoNome ? ` — ${confirmacao.planoNome}` : ''}
+            </p>
+            {confirmacao.detalhe && (
+              <p>
+                <strong>Assinado para:</strong> {confirmacao.detalhe}
+              </p>
+            )}
+            <p>
+              <strong>Data:</strong> {new Date(confirmacao.dataAssinatura).toLocaleDateString('pt-BR')}
+            </p>
+            {confirmacao.formaPagamento && (
+              <p>
+                <strong>Forma de pagamento:</strong> Cartão {confirmacao.formaPagamento.bandeira.toUpperCase()} final{' '}
+                {confirmacao.formaPagamento.final4}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="portal-confirm-col">
+          <h4>Acessar sua conta</h4>
+          <p>Acompanhe sua assinatura e seus dados a qualquer momento no portal do cliente.</p>
+          <button type="button" className="portfolio-link portal-login-submit" onClick={onContinuar}>
+            Ir para o portal
+          </button>
+
+          <h4 className="portal-confirm-col-title-spaced">Precisa de ajuda?</h4>
+          <a href="/fale-conosco" className="detail-page-back">
+            Fale conosco
+          </a>
+        </div>
+      </div>
+    </div>
   )
 }
 
