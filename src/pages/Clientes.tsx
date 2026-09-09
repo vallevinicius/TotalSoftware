@@ -7,7 +7,7 @@ const TESTIMONIALS: Testimonial[] = [
     name: 'Heloiza Schneidewind',
     role: 'Arquiteta',
     quote: 'Atendimento extremamente profissional e eficiente, suporte impecável a todo momento.',
-    link: { label: '@heloiza.arq', url: 'https://instagram.com/heloiza.arq' },
+    link: { label: '@heloizasch.arq', url: 'https://instagram.com/heloizasch.arq' },
   },
   {
     initials: 'RR',
@@ -15,6 +15,14 @@ const TESTIMONIALS: Testimonial[] = [
     role: 'Setor Imobiliário',
     quote: 'Equipe muito atenciosa e ágil. O projeto ficou excelente e superou minhas expectativas.',
     link: { label: '@rafarodriguesimoveis', url: 'https://instagram.com/rafarodriguesimoveis' },
+  },
+  {
+    initials: 'PV',
+    name: 'Pousada Viva Mar',
+    role: 'Hotelaria e Turismo',
+    quote:
+      'Um serviço extremamente completo e complexo, mas entregue com muita maestria e atenção a cada detalhe. Recomendamos de olhos fechados.',
+    link: { label: '@pousadavivamar', url: 'https://www.instagram.com/pousadavivamar/' },
   },
 ]
 

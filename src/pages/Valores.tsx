@@ -12,6 +12,10 @@ const PLANS = [
   {
     title: 'Início Rápido',
     desc: 'Landing para captar clientes',
+    // Preços "a partir de" baseados em pesquisa de mercado (faixa de
+    // freelancers/agências no Brasil, 2026) para o escopo equivalente de
+    // cada plano — ver conversa para as faixas usadas como referência.
+    priceFrom: 900,
     features: [
       { text: 'Uma página de destino', included: true },
       { text: 'Design responsivo', included: true },
@@ -29,6 +33,7 @@ const PLANS = [
   {
     title: 'Site Profissional',
     desc: 'Site completo para sua marca',
+    priceFrom: 2500,
     features: [
       { text: 'Páginas principais', included: true },
       { text: 'SEO inicial', included: true },
@@ -44,8 +49,9 @@ const PLANS = [
     buttonPrimary: true,
   },
   {
-    title: 'Loja',
+    title: 'E-Commerce / Loja Online',
     desc: 'Venda online com estrutura',
+    priceFrom: 3900,
     features: [
       { text: 'Catálogo e compra', included: true },
       { text: 'Checkout integrado', included: true },
@@ -63,6 +69,7 @@ const PLANS = [
   {
     title: 'Sistema Inicial',
     desc: 'Primeira versão do seu produto',
+    priceFrom: 8900,
     features: [
       { text: 'Escopo essencial', included: true },
       { text: 'Área de login', included: true },
@@ -80,6 +87,9 @@ const PLANS = [
   {
     title: 'Projeto Sob Medida',
     desc: 'Fluxo personalizado para seu negócio',
+    // Escopo genuinamente sob medida (pode variar demais) — mantido sem um
+    // valor inicial fixo, ao contrário dos planos acima.
+    priceFrom: null,
     features: [
       { text: 'Mapeamento completo', included: true },
       { text: 'Time dedicado', included: true },
@@ -124,7 +134,7 @@ const FAQS = [
   },
   {
     q: 'E o suporte contínuo?',
-    a: 'Suporte mensal mediante ao pagamento de mensalidade definida na conversa com o especialista. Podemos adequar ao melhor plano para sua necessidade.',
+    a: 'Suporte mensal é opcional e o valor é negociável — cobrado apenas se você quiser manutenção e suporte contínuo após a entrega.',
   },
 ]
 
@@ -154,8 +164,18 @@ export default function Valores() {
               <p className="pricing-desc">{plan.desc}</p>
             </div>
             <div className="pricing-price">
-              <span className="price-value price-quote">Sob consulta</span>
-              <span className="price-period">proposta personalizada</span>
+              {plan.priceFrom != null ? (
+                <>
+                  <span className="price-label">A partir de</span>
+                  <span className="price-value">{plan.priceFrom.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 })}</span>
+                  <span className="price-period">proposta personalizada</span>
+                </>
+              ) : (
+                <>
+                  <span className="price-value price-quote">Sob consulta</span>
+                  <span className="price-period">proposta personalizada</span>
+                </>
+              )}
             </div>
             <ul className="pricing-features">
               {plan.features.map((feature) => (
@@ -165,7 +185,7 @@ export default function Valores() {
               ))}
             </ul>
             <p className="pricing-note">
-              <em>Suporte mensal disponível mediante pagamento de mensalidade definida na conversa com o especialista.</em>
+              <em>Suporte mensal opcional: mensalidade com valor negociável.</em>
             </p>
             <button
               className={['pricing-btn', plan.buttonPrimary && 'btn-primary'].filter(Boolean).join(' ')}
@@ -189,7 +209,7 @@ export default function Valores() {
             ))}
           </div>
           <p className="pricing-note">
-            <em>Suporte mensal disponível mediante pagamento de mensalidade definida na conversa com o especialista.</em>
+            <em>Suporte mensal opcional: mensalidade com valor negociável.</em>
           </p>
           <button className="pricing-btn btn-primary" onClick={() => requestProposal('Projeto Customizado')}>
             Falar com especialista

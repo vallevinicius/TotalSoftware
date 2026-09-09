@@ -1622,6 +1622,14 @@ footer {
   margin-bottom: 2rem;
 }
 
+.price-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+}
+
 .price-value {
   font-size: 2.5rem;
   font-weight: 800;
