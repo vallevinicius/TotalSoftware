@@ -15,6 +15,17 @@ function isLightColor(color: string) {
   return luminance > 0.5
 }
 
+// Walks up to 5 ancestors looking for the first opaque background.
+function isOverLightBackground(element: Element) {
+  let currentElement: Element | null = element
+  for (let i = 0; i < 5 && currentElement; i++) {
+    const color = window.getComputedStyle(currentElement).backgroundColor
+    if (color && color !== 'rgba(0, 0, 0, 0)') return isLightColor(color)
+    currentElement = currentElement.parentElement
+  }
+  return true
+}
+
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null)
   const ringRef = useRef<HTMLDivElement>(null)
@@ -24,75 +35,63 @@ export default function CustomCursor() {
     const ring = ringRef.current
     if (!cursor || !ring) return
 
+    // Touch devices have no hover cursor — skip all the work.
+    if (!window.matchMedia('(pointer: fine)').matches) return
+
     let mx = 0
     let my = 0
     let rx = 0
     let ry = 0
+    let rafId = 0
+    let lastTarget: Element | null = null
+
+    const place = (el: HTMLElement, x: number, y: number) => {
+      // transform is composited on the GPU; left/top would trigger layout every frame
+      el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`
+    }
+
+    const tick = () => {
+      place(cursor, mx, my)
+      rx += (mx - rx) * 0.12
+      ry += (my - ry) * 0.12
+      place(ring, rx, ry)
+
+      // Keep animating only while the ring is still catching up
+      if (Math.abs(mx - rx) > 0.1 || Math.abs(my - ry) > 0.1) {
+        rafId = requestAnimationFrame(tick)
+      } else {
+        rafId = 0
+      }
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
       mx = e.clientX
       my = e.clientY
-      cursor.style.left = mx + 'px'
-      cursor.style.top = my + 'px'
-
-      const element = document.elementFromPoint(mx, my)
-      if (element) {
-        let isLight = true
-        let currentElement: Element | null = element
-
-        for (let i = 0; i < 5; i++) {
-          if (currentElement) {
-            const color = window.getComputedStyle(currentElement).backgroundColor
-            if (color && color !== 'rgba(0, 0, 0, 0)') {
-              isLight = isLightColor(color)
-              break
-            }
-            currentElement = currentElement.parentElement
-          }
-        }
-
-        if (!isLight) {
-          cursor.classList.add('light')
-          ring.classList.add('light')
-        } else {
-          cursor.classList.remove('light')
-          ring.classList.remove('light')
-        }
-      }
+      if (!rafId) rafId = requestAnimationFrame(tick)
     }
-
-    let rafId: number
-    const animRing = () => {
-      rx += (mx - rx) * 0.12
-      ry += (my - ry) * 0.12
-      ring.style.left = rx + 'px'
-      ring.style.top = ry + 'px'
-      rafId = requestAnimationFrame(animRing)
-    }
-    rafId = requestAnimationFrame(animRing)
 
     const handleMouseOver = (e: MouseEvent) => {
-      if ((e.target as Element)?.closest?.(HOVER_SELECTOR)) {
-        cursor.classList.add('expand')
-        ring.classList.add('expand')
-      }
-    }
-    const handleMouseOut = (e: MouseEvent) => {
-      if ((e.target as Element)?.closest?.(HOVER_SELECTOR)) {
-        cursor.classList.remove('expand')
-        ring.classList.remove('expand')
-      }
+      const target = e.target as Element | null
+      if (!target || target === lastTarget) return
+      lastTarget = target
+
+      // Background color only needs rechecking when the hovered element changes
+      const light = !isOverLightBackground(target)
+      cursor.classList.toggle('light', light)
+      ring.classList.toggle('light', light)
+
+      const expand = !!target.closest?.(HOVER_SELECTOR)
+      cursor.classList.toggle('expand', expand)
+      ring.classList.toggle('expand', expand)
     }
 
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseover', handleMouseOver)
-    document.addEventListener('mouseout', handleMouseOut)
+    document.addEventListener('mousemove', handleMouseMove, { passive: true })
+    document.addEventListener('mouseover', handleMouseOver, { passive: true })
 
     return () => {
       cancelAnimationFrame(rafId)
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseover', handleMouseOver)
-      document.removeEventListener('mouseout', handleMouseOut)
     }
   }, [])
 

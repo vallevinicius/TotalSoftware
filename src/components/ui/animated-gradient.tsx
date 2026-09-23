@@ -217,7 +217,7 @@ export default function AnimatedGradient({
     const gl = canvas.getContext('webgl2', {
       premultipliedAlpha: true,
       alpha: true,
-      antialias: true,
+      antialias: false,
     })
     if (!gl) return
 
@@ -271,10 +271,13 @@ export default function AnimatedGradient({
       u_swirlIterations: gl.getUniformLocation(program, 'u_swirlIterations'),
     }
 
+    // The shader is soft and blurry by nature, so rendering it at retina
+    // resolution (4x the pixels on a 2x display) costs a lot for no visible gain.
+    const pixelRatio = 1
+
     const resize = () => {
       const width = container.clientWidth
       const height = container.clientHeight
-      const pixelRatio = window.devicePixelRatio || 1
       canvas.width = width * pixelRatio
       canvas.height = height * pixelRatio
       canvas.style.width = `${width}px`
@@ -294,7 +297,7 @@ export default function AnimatedGradient({
 
       gl.uniform1f(uniforms.u_time, elapsed * speed + params.offset * 0.01)
       gl.uniform2f(uniforms.u_resolution, canvas.width, canvas.height)
-      gl.uniform1f(uniforms.u_pixelRatio, window.devicePixelRatio || 1)
+      gl.uniform1f(uniforms.u_pixelRatio, pixelRatio)
       gl.uniform1f(uniforms.u_scale, params.scale)
       gl.uniform1f(uniforms.u_rotation, (params.rotation * Math.PI) / 180)
 

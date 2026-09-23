@@ -15,7 +15,7 @@ const PLANS = [
     // Preços "a partir de" baseados em pesquisa de mercado (faixa de
     // freelancers/agências no Brasil, 2026) para o escopo equivalente de
     // cada plano — ver conversa para as faixas usadas como referência.
-    priceFrom: 900,
+    priceFrom: 793.9,
     features: [
       { text: 'Uma página de destino', included: true },
       { text: 'Design responsivo', included: true },
@@ -33,7 +33,7 @@ const PLANS = [
   {
     title: 'Site Profissional',
     desc: 'Site completo para sua marca',
-    priceFrom: 2500,
+    priceFrom: 2489.9,
     features: [
       { text: 'Páginas principais', included: true },
       { text: 'SEO inicial', included: true },
@@ -51,7 +51,7 @@ const PLANS = [
   {
     title: 'E-Commerce / Loja Online',
     desc: 'Venda online com estrutura',
-    priceFrom: 3900,
+    priceFrom: 3876.9,
     features: [
       { text: 'Catálogo e compra', included: true },
       { text: 'Checkout integrado', included: true },
@@ -69,7 +69,7 @@ const PLANS = [
   {
     title: 'Sistema Inicial',
     desc: 'Primeira versão do seu produto',
-    priceFrom: 8900,
+    priceFrom: 8893.9,
     features: [
       { text: 'Escopo essencial', included: true },
       { text: 'Área de login', included: true },
@@ -167,7 +167,7 @@ export default function Valores() {
               {plan.priceFrom != null ? (
                 <>
                   <span className="price-label">A partir de</span>
-                  <span className="price-value">{plan.priceFrom.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 })}</span>
+                  <span className="price-value">{plan.priceFrom.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   <span className="price-period">proposta personalizada</span>
                 </>
               ) : (

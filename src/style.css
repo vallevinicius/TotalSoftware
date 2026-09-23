@@ -101,8 +101,8 @@ label,
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
+  will-change: transform;
   transition:
-    transform 0.1s ease,
     width 0.2s ease,
     height 0.2s ease,
     background 0.2s ease;
@@ -118,8 +118,8 @@ label,
   pointer-events: none;
   z-index: 9998;
   transform: translate(-50%, -50%);
+  will-change: transform;
   transition:
-    transform 0.12s ease,
     width 0.2s ease,
     height 0.2s ease,
     opacity 0.2s ease,
@@ -1080,7 +1080,6 @@ section.page-content {
 }
 .theme-pousada .detail-page-info-cell {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
 }
 .theme-pousada .detail-page-info-cell p,
 .theme-pousada .detail-page-info-cell a {
@@ -1090,9 +1089,9 @@ section.page-content {
   color: rgba(241, 245, 249, 0.5);
 }
 .theme-pousada .product-feature-card {
-  background: var(--card-surface);
+  /* Opaque enough to read without a per-frame backdrop blur over the animated background */
+  background: rgba(15, 23, 42, 0.8);
   border-color: var(--card-border);
-  backdrop-filter: blur(12px);
 }
 .theme-pousada .product-feature-icon {
   color: #60a5fa;
@@ -1138,7 +1137,6 @@ section.page-content {
 }
 .theme-agenda .detail-page-info-cell {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
 }
 .theme-agenda .detail-page-info-cell p,
 .theme-agenda .detail-page-info-cell a {
@@ -1148,9 +1146,9 @@ section.page-content {
   color: rgba(241, 245, 249, 0.5);
 }
 .theme-agenda .product-feature-card {
-  background: var(--card-surface);
+  /* Opaque enough to read without a per-frame backdrop blur over the animated background */
+  background: rgba(15, 23, 42, 0.8);
   border-color: var(--card-border);
-  backdrop-filter: blur(12px);
 }
 .theme-agenda .product-feature-icon {
   color: #a78bfa;
@@ -1196,7 +1194,6 @@ section.page-content {
 }
 .theme-control .detail-page-info-cell {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
 }
 .theme-control .detail-page-info-cell p,
 .theme-control .detail-page-info-cell a {
@@ -1206,9 +1203,9 @@ section.page-content {
   color: rgba(241, 245, 249, 0.5);
 }
 .theme-control .product-feature-card {
-  background: var(--card-surface);
+  /* Opaque enough to read without a per-frame backdrop blur over the animated background */
+  background: rgba(15, 23, 42, 0.8);
   border-color: var(--card-border);
-  backdrop-filter: blur(12px);
 }
 .theme-control .product-feature-icon {
   color: #10b981;
@@ -1624,10 +1621,11 @@ footer {
 
 .price-label {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--gray-400);
+  color: var(--gray-600, var(--black));
 }
 
 .price-value {

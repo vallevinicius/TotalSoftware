@@ -154,17 +154,28 @@ export const FluidParticlesBackground = ({
       maxLife: 100 + Math.random() * 50,
     }));
 
-    let animationFrameId: number;
+    // Particles are drawn in a few opacity buckets so each frame issues a
+    // handful of fill() calls instead of one per particle.
+    const OPACITY_BUCKETS = 6;
+    const MAX_OPACITY = 0.15;
+    const buckets: number[][] = Array.from({ length: OPACITY_BUCKETS }, () => []);
+
+    let animationFrameId = 0;
+    let isVisible = true;
 
     const animate = () => {
       const isDark = document.documentElement.classList.contains("dark");
       const scheme = isDark ? COLOR_SCHEME.dark : COLOR_SCHEME.light;
+      const rgb = isDark ? "255, 255, 255" : "0, 0, 0";
+      const z = Date.now() * 0.0001;
 
       // Semi-transparent fill creates fading trails instead of a hard clear
       ctx.fillStyle = scheme.background;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      for (const particle of particles) {
+      for (const bucket of buckets) bucket.length = 0;
+
+      particles.forEach((particle, index) => {
         particle.life += 1;
         if (particle.life > particle.maxLife) {
           particle.life = 0;
@@ -172,13 +183,10 @@ export const FluidParticlesBackground = ({
           particle.y = Math.random() * canvas.height;
         }
 
-        const opacity =
-          Math.sin((particle.life / particle.maxLife) * Math.PI) * 0.15;
-
         const n = noise.simplex3(
           particle.x * noiseIntensity,
           particle.y * noiseIntensity,
-          Date.now() * 0.0001,
+          z,
         );
 
         const angle = n * Math.PI * 4;
@@ -193,24 +201,66 @@ export const FluidParticlesBackground = ({
         if (particle.y < 0) particle.y = canvas.height;
         if (particle.y > canvas.height) particle.y = 0;
 
-        ctx.fillStyle = isDark
-          ? `rgba(255, 255, 255, ${opacity})`
-          : `rgba(0, 0, 0, ${opacity})`;
+        const fade = Math.sin((particle.life / particle.maxLife) * Math.PI);
+        const bucket = Math.min(
+          OPACITY_BUCKETS - 1,
+          Math.floor(fade * OPACITY_BUCKETS),
+        );
+        if (bucket > 0) buckets[bucket].push(index);
+      });
+
+      buckets.forEach((indices, bucket) => {
+        if (indices.length === 0) return;
+        const opacity = ((bucket + 0.5) / OPACITY_BUCKETS) * MAX_OPACITY;
+        ctx.fillStyle = `rgba(${rgb}, ${opacity})`;
         ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        for (const index of indices) {
+          const { x, y, size } = particles[index];
+          // Tiny squares are visually identical to arcs at this size and far cheaper
+          ctx.rect(x - size, y - size, size * 2, size * 2);
+        }
         ctx.fill();
-      }
+      });
 
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    animationFrameId = requestAnimationFrame(animate);
+    const start = () => {
+      if (!animationFrameId && isVisible) {
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    };
+    const stop = () => {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = 0;
+    };
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    // Stop the loop entirely while the hero is scrolled out of view
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible && !prefersReducedMotion) start();
+      else stop();
+    });
+    observer.observe(canvas);
+
+    if (prefersReducedMotion) {
+      // Draw a single static frame
+      animate();
+      stop();
+    } else {
+      start();
+    }
 
     const handleResize = () => resizeCanvas();
     window.addEventListener("resize", handleResize);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      stop();
+      observer.disconnect();
       window.removeEventListener("resize", handleResize);
     };
   }, [particleCount, noiseIntensity, particleSize.min, particleSize.max]);

@@ -180,6 +180,8 @@ export function NeonMesh({
     container.addEventListener('mouseleave', handleMouseLeave)
 
     let time = 0
+    const SCALE_STEPS = 10
+    const lineBuckets = new Map<number, number[]>()
 
     const render = () => {
       time += 0.025
@@ -290,6 +292,10 @@ export function NeonMesh({
       }
 
       // Render Elastic 3D Wireframe Mesh
+      // Lines are grouped by (hot, quantized depth scale) so the whole mesh is
+      // stroked in a few dozen paths instead of one stroke() per segment.
+      // Reuse arrays between frames to avoid garbage-collection pauses
+      lineBuckets.forEach((coords) => (coords.length = 0))
       for (let i = 0; i < constraints.length; i++) {
         const c = constraints[i]
         const midX = (c.p1.projX + c.p2.projX) / 2
@@ -297,36 +303,51 @@ export function NeonMesh({
 
         const dx = mouse.x - midX
         const dy = mouse.y - midY
-        const dist = Math.sqrt(dx * dx + dy * dy)
-
-        const isHot = dist < mouse.radius
+        const isHot = dx * dx + dy * dy < mouse.radius * mouse.radius
         const avgScale = (c.p1.projScale + c.p2.projScale) / 2
+        const scaleStep = Math.round(avgScale * SCALE_STEPS)
+        const key = isHot ? -scaleStep - 1 : scaleStep
 
+        let bucket = lineBuckets.get(key)
+        if (!bucket) {
+          bucket = []
+          lineBuckets.set(key, bucket)
+        }
+        bucket.push(c.p1.projX, c.p1.projY, c.p2.projX, c.p2.projY)
+      }
+
+      lineBuckets.forEach((coords, key) => {
+        if (coords.length === 0) return
+        const isHot = key < 0
+        const avgScale = (isHot ? -key - 1 : key) / SCALE_STEPS
         ctx.strokeStyle = isHot
           ? neonLime
           : `rgba(${baseMeshColor}, ${Math.min(1, Math.max(0.1, (isDarkMode ? 0.25 : 0.4) * avgScale))})`
         ctx.lineWidth = isHot ? 2 * avgScale : 0.8 * avgScale
 
         ctx.beginPath()
-        ctx.moveTo(c.p1.projX, c.p1.projY)
-        ctx.lineTo(c.p2.projX, c.p2.projY)
+        for (let j = 0; j < coords.length; j += 4) {
+          ctx.moveTo(coords[j], coords[j + 1])
+          ctx.lineTo(coords[j + 2], coords[j + 3])
+        }
         ctx.stroke()
-      }
+      })
 
       // Render Active Depth Nodes
+      ctx.fillStyle = neonLime
+      ctx.beginPath()
       for (let i = 0; i < points.length; i++) {
         const p = points[i]
         const dx = mouse.x - p.projX
         const dy = mouse.y - p.projY
-        const dist = Math.sqrt(dx * dx + dy * dy)
 
-        if (dist < 100) {
-          ctx.fillStyle = neonLime
-          ctx.beginPath()
-          ctx.arc(p.projX, p.projY, 2.5 * p.projScale, 0, Math.PI * 2)
-          ctx.fill()
+        if (dx * dx + dy * dy < 100 * 100) {
+          const r = 2.5 * p.projScale
+          ctx.moveTo(p.projX + r, p.projY)
+          ctx.arc(p.projX, p.projY, r, 0, Math.PI * 2)
         }
       }
+      ctx.fill()
 
       animationFrameId = requestAnimationFrame(render)
     }
