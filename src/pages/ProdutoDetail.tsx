@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { useScroll } from 'framer-motion'
 import { CheckCircle2 } from 'lucide-react'
@@ -14,6 +14,7 @@ export default function ProdutoDetail() {
   const { slug } = useParams()
   const product = getProductBySlug(slug)
   const heroRef = useRef<HTMLDivElement>(null)
+  const [showAllFeatures, setShowAllFeatures] = useState(false)
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ['start start', 'end end'],
@@ -110,14 +111,49 @@ export default function ProdutoDetail() {
             <h2 className="section-title">O que o {product.name} faz</h2>
           </div>
         </div>
-        <div className="product-feature-grid">
-          {product.highlights.map((highlight) => (
-            <div className="product-feature-card" key={highlight}>
-              <CheckCircle2 className="product-feature-icon" strokeWidth={1.75} />
-              <span>{highlight}</span>
-            </div>
-          ))}
-        </div>
+        {product.featureGroups ? (
+          <div className="product-feature-groups">
+            {(showAllFeatures
+              ? product.featureGroups
+              : product.featureGroups.slice(0, 1)
+            ).map((group) => (
+              <div className="product-feature-group" key={group.title}>
+                <h3 className="product-feature-group-title">{group.title}</h3>
+                <p className="product-feature-group-desc">{group.description}</p>
+                <div className="product-feature-grid">
+                  {group.items.map((item) => (
+                    <div className="product-feature-card detailed" key={item.title}>
+                      <CheckCircle2 className="product-feature-icon" strokeWidth={1.75} />
+                      <div>
+                        <span className="product-feature-card-title">{item.title}</span>
+                        <p className="product-feature-card-text">{item.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {product.featureGroups.length > 1 && (
+              <button
+                type="button"
+                className="product-feature-toggle"
+                aria-expanded={showAllFeatures}
+                onClick={() => setShowAllFeatures((v) => !v)}
+              >
+                {showAllFeatures ? 'Ver menos' : 'Ver mais funcionalidades'}
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="product-feature-grid">
+            {product.highlights.map((highlight) => (
+              <div className="product-feature-card" key={highlight}>
+                <CheckCircle2 className="product-feature-icon" strokeWidth={1.75} />
+                <span>{highlight}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {product.pricingPlans && (

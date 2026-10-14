@@ -118,7 +118,7 @@ export interface PortalPlano {
 }
 
 export async function fetchPortalPlanos(
-  produto: 'totalpousada' | 'totalagenda' | 'totalcontrol',
+  produto: 'totalpousada' | 'marquo' | 'totalcontrol',
 ): Promise<PortalPlano[]> {
   const response = await fetch(
     `${requireApiUrl()}/api/portal/planos?produto=${encodeURIComponent(produto)}`,
@@ -168,7 +168,7 @@ export async function portalMe(token: string): Promise<PortalMeResponse> {
 export type CheckoutSessionParams =
   | { produto?: 'totalpousada'; estabelecimentoId: number }
   | {
-      produto: 'totalagenda'
+      produto: 'marquo'
       planoId: number
       nomeEmpresa: string
       nomeFantasia: string
@@ -189,7 +189,7 @@ export async function createPagamentoCheckoutSession(
   params: CheckoutSessionParams,
 ): Promise<{ url: string }> {
   const body =
-    params.produto === 'totalagenda'
+    params.produto === 'marquo'
       ? {
           produto: params.produto,
           planoId: params.planoId,
@@ -224,7 +224,7 @@ export async function createPagamentoCheckoutSession(
 
 export interface ConfirmacaoPagamento {
   numero: string
-  produto: 'totalpousada' | 'totalagenda' | 'totalcontrol'
+  produto: 'totalpousada' | 'marquo' | 'totalcontrol'
   planoNome: string | null
   detalhe: string | null
   valor: number | null

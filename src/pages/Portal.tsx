@@ -18,7 +18,7 @@ import {
 import { buscarEnderecoPorCep, maskCep, maskCnpj, maskCpf, maskTelefone } from '../lib/masks'
 
 type PendingPlano =
-  | { produto: 'totalagenda'; planoNome: string }
+  | { produto: 'marquo'; planoNome: string }
   | { produto: 'totalpousada'; planoNome: string }
   | { produto: 'totalcontrol'; planoNome: string }
 
@@ -81,7 +81,7 @@ export default function Portal() {
 
     const produto = params.get('produto')
     const plano = params.get('plano')
-    if ((produto === 'totalagenda' || produto === 'totalpousada' || produto === 'totalcontrol') && plano) {
+    if ((produto === 'marquo' || produto === 'totalpousada' || produto === 'totalcontrol') && plano) {
       setPendingPlano({ produto, planoNome: plano })
       params.delete('produto')
       params.delete('plano')
@@ -543,7 +543,7 @@ function PortalCadastroForm({
 }
 
 const PRODUTO_LABEL: Record<PendingPlano['produto'], string> = {
-  totalagenda: 'TotalAgenda',
+  marquo: 'Marquo',
   totalpousada: 'Total Pousada',
   totalcontrol: 'TotalControl',
 }
@@ -584,9 +584,9 @@ function PendingCheckoutCard({
       }
 
       let url: string
-      if (pendingPlano.produto === 'totalagenda') {
+      if (pendingPlano.produto === 'marquo') {
         ;({ url } = await createPagamentoCheckoutSession(token, {
-          produto: 'totalagenda',
+          produto: 'marquo',
           planoId: plano.id,
           nomeEmpresa,
           nomeFantasia,
@@ -629,7 +629,7 @@ function PendingCheckoutCard({
         Assinar plano <strong>{pendingPlano.planoNome}</strong> do {PRODUTO_LABEL[pendingPlano.produto]}
       </p>
 
-      {pendingPlano.produto === 'totalagenda' && (
+      {pendingPlano.produto === 'marquo' && (
         <>
           <div className="portal-login-field">
             <label htmlFor="pending-nome-fantasia-agenda">Nome fantasia</label>

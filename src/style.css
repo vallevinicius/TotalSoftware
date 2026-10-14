@@ -1043,6 +1043,70 @@ section.page-content {
   box-shadow: 0 16px 32px rgba(10, 10, 10, 0.08);
   border-color: var(--gray-400);
 }
+.product-feature-groups {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+.product-feature-group-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.product-feature-group-desc {
+  margin: 0.35rem 0 1.25rem;
+  font-size: 0.92rem;
+  color: var(--gray-600);
+}
+.product-feature-toggle {
+  align-self: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--black);
+  background: transparent;
+  border: 1px solid var(--gray-200);
+  border-radius: 999px;
+  padding: 0.85rem 1.6rem;
+  cursor: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.product-feature-toggle:hover {
+  border-color: var(--black);
+}
+.theme-agenda .product-feature-toggle:hover {
+  background: #8b5cf6;
+  border-color: #8b5cf6;
+}
+.product-feature-card.detailed {
+  align-items: flex-start;
+}
+.product-feature-card.detailed .product-feature-icon {
+  margin-top: 0.15rem;
+}
+.product-feature-card-title {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.product-feature-card-text {
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--gray-600);
+}
+@media (max-width: 720px) {
+  .product-feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
 .product-feature-icon {
   width: 20px;
   height: 20px;
@@ -1107,7 +1171,7 @@ section.page-content {
   color: #3b82f6;
 }
 
-/* Total Agenda brand theme (SaaS colors, animated gradient background) */
+/* Marquo brand theme (SaaS colors, animated gradient background) */
 .theme-agenda {
   --black: #f1f5f9;
   --white: #f8fafc;
@@ -1120,7 +1184,10 @@ section.page-content {
 
   position: relative;
   color: var(--black);
-  background: transparent;
+  /* Dark base so the page stays legible even before/without the WebGL gradient;
+     isolation keeps the gradient (z-index -1) painting above this background. */
+  background: #0b0714;
+  isolation: isolate;
 }
 .theme-agenda .detail-page-hero,
 .theme-agenda section {

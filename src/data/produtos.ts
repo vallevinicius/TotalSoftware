@@ -1,5 +1,11 @@
 import type { PricingPlan } from "../components/ui/pricing";
 
+export interface FeatureGroup {
+  title: string;
+  description: string;
+  items: { title: string; description: string }[];
+}
+
 export interface Product {
   slug: string;
   name: string;
@@ -13,6 +19,7 @@ export interface Product {
   description: string;
   about: string;
   highlights: string[];
+  featureGroups?: FeatureGroup[];
   techStack: string[];
   themeClassName?: string;
   accentColor?: string;
@@ -101,24 +108,156 @@ export const PRODUCTS: Product[] = [
     ],
   },
   {
-    slug: "total-agenda",
-    name: "TotalAgenda",
+    slug: "marquo",
+    name: "Marquo",
     category: "SaaS de Agendamento",
     status: "Em desenvolvimento",
     visualClassName: "portfolio-visual-agenda",
     badge: "SaaS",
-    wordmark: "TotalAgenda",
-    giantLabel: "TotalAgenda",
+    wordmark: "Marquo",
+    giantLabel: "Marquo",
     caption: "Agenda online para negócios com equipe",
     description:
       "Sistema de agenda online para negócios de serviços com equipe, com controle de horários e profissionais em um só lugar.",
     about:
-      "O TotalAgenda é um sistema de agenda online para negócios de serviços que trabalham com equipe, como salões, clínicas e estúdios. Os planos variam de acordo com o número de profissionais que podem usar o sistema ao mesmo tempo.",
-    // TODO: copy resumida — ampliar descrição/destaques de marketing do TotalAgenda quando houver mais informações do produto
+      "O Marquo é um sistema de agenda online para negócios de serviços que trabalham com equipe, como salões, clínicas e estúdios. Os planos variam de acordo com o número de profissionais que podem usar o sistema ao mesmo tempo.",
+    // TODO: copy resumida — ampliar descrição/destaques de marketing do Marquo quando houver mais informações do produto
     highlights: [
       "Agenda de horários online",
       "Gestão de profissionais por plano",
       "Assinatura mensal via cartão",
+    ],
+    featureGroups: [
+      {
+        title: "Agenda e atendimento",
+        description: "Do agendamento ao atendimento concluído, sem planilha nem caderno.",
+        items: [
+          {
+            title: "Agenda por profissional",
+            description:
+              "Grade do dia com uma coluna por profissional, criação de atendimento direto no horário vago e painel lateral para confirmar, remarcar ou cancelar.",
+          },
+          {
+            title: "Vários serviços por atendimento",
+            description:
+              "Um mesmo atendimento pode ter mais de um serviço, com preço e duração registrados no momento da marcação.",
+          },
+          {
+            title: "Link público de agendamento",
+            description:
+              "Seus clientes agendam sozinhos pela página do seu negócio, escolhendo serviço, profissional e horário disponível.",
+          },
+          {
+            title: "Status do atendimento",
+            description:
+              "Acompanhe cada atendimento: agendado, confirmado, em atendimento, concluído, falta ou cancelado.",
+          },
+          {
+            title: "Sem conflito de horários",
+            description:
+              "O sistema impede dois atendimentos no mesmo horário para o mesmo profissional e respeita os bloqueios da agenda.",
+          },
+          {
+            title: "Lista de espera",
+            description:
+              "Quando a agenda está cheia, registre os clientes interessados e acompanhe quem já foi contatado.",
+          },
+        ],
+      },
+      {
+        title: "Clientes",
+        description: "Conheça quem passa pelo seu negócio e mantenha o histórico à mão.",
+        items: [
+          {
+            title: "Cadastro completo",
+            description:
+              "Contato, aniversário, observações e etiquetas para organizar sua base de clientes.",
+          },
+          {
+            title: "Histórico do cliente",
+            description:
+              "Linha do tempo com atendimentos realizados, agendamentos futuros e faltas.",
+          },
+          {
+            title: "Fichas personalizadas",
+            description:
+              "Crie formulários próprios, como anamnese, e preencha durante o atendimento.",
+          },
+        ],
+      },
+      {
+        title: "Vendas e caixa",
+        description: "Feche a conta do atendimento e saiba o que entrou no dia.",
+        items: [
+          {
+            title: "Comandas",
+            description:
+              "Reúna serviços, produtos e itens avulsos, aplique descontos e registre as formas de pagamento: dinheiro, débito, crédito ou Pix.",
+          },
+          {
+            title: "Controle de caixa",
+            description:
+              "Abertura com fundo de troco, sangria, suprimento e fechamento com conferência.",
+          },
+          {
+            title: "Produtos e estoque",
+            description:
+              "Catálogo de produtos com entradas, saídas e ajustes. A venda na comanda dá baixa no estoque automaticamente.",
+          },
+        ],
+      },
+      {
+        title: "Equipe e financeiro",
+        description: "Saiba quanto cada profissional rendeu e como está o resultado do mês.",
+        items: [
+          {
+            title: "Profissionais e horários",
+            description:
+              "Cadastre a equipe, defina horários de trabalho e escolha quais serviços cada um atende.",
+          },
+          {
+            title: "Comissões e repasses",
+            description:
+              "Regras de comissão por profissional, em porcentagem ou valor fixo, com saldo a repassar e registro dos repasses.",
+          },
+          {
+            title: "Financeiro",
+            description:
+              "Contas a pagar e a receber, fluxo de caixa por categoria e resultado do negócio com custo dos produtos e despesas.",
+          },
+          {
+            title: "Relatórios",
+            description:
+              "Balanço geral de serviços realizados e produtos vendidos, por período e por cliente.",
+          },
+          {
+            title: "Acessos por função",
+            description:
+              "Perfis de dono, recepção e profissional, cada um vendo apenas o que precisa.",
+          },
+        ],
+      },
+      {
+        title: "Presença online",
+        description: "Seja encontrado por quem procura o seu serviço.",
+        items: [
+          {
+            title: "Página pública do negócio",
+            description:
+              "Logo, endereço, contato e galeria de fotos, com link próprio para divulgar.",
+          },
+          {
+            title: "Marketplace",
+            description:
+              "Apareça na busca por cidade e categoria e receba avaliações de clientes que já foram atendidos.",
+          },
+          {
+            title: "Área do cliente",
+            description:
+              "Seu cliente acompanha e gerencia os próprios agendamentos em uma conta pessoal.",
+          },
+        ],
+      },
     ],
     techStack: ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL"],
     themeClassName: "theme-agenda",
@@ -127,34 +266,61 @@ export const PRODUCTS: Product[] = [
     pricingPlans: [
       {
         name: "Essencial",
-        price: "29.9",
-        yearlyPrice: "29.9",
+        price: "49.9",
+        yearlyPrice: "49.9",
         period: "mês",
-        description: "Para negócios pequenos começando a organizar a agenda.",
+        description: "Para quem trabalha sozinho ou em dupla.",
         buttonText: "Assinar",
-        href: "/portal?produto=totalagenda&plano=Essencial",
-        features: ["Agenda de horários online", "Até 2 profissionais"],
+        href: "/portal?produto=marquo&plano=Essencial",
+        features: [
+          "Até 2 profissionais",
+          "Agenda online com link de agendamento",
+          "Clientes, fichas de anamnese e lista de espera",
+          "Comandas, caixa, produtos e estoque",
+          "Comissões, repasses e financeiro",
+          "Relatórios do negócio",
+          "Página pública e marketplace",
+          "Todas as funcionalidades em qualquer plano",
+        ],
       },
       {
         name: "Profissional",
-        price: "79.9",
-        yearlyPrice: "79.9",
+        price: "99.9",
+        yearlyPrice: "99.9",
         period: "mês",
-        description: "Para negócios com uma equipe um pouco maior.",
+        description: "Para salões e barbearias com equipe pequena.",
         buttonText: "Assinar",
-        href: "/portal?produto=totalagenda&plano=Profissional",
+        href: "/portal?produto=marquo&plano=Profissional",
         isPopular: true,
-        features: ["Tudo do plano Essencial", "Até 5 profissionais"],
+        features: [
+          "Até 5 profissionais",
+          "Agenda online com link de agendamento",
+          "Clientes, fichas de anamnese e lista de espera",
+          "Comandas, caixa, produtos e estoque",
+          "Comissões, repasses e financeiro",
+          "Relatórios do negócio",
+          "Página pública e marketplace",
+          "Todas as funcionalidades em qualquer plano",
+        ],
       },
       {
         name: "Premium",
-        price: "149.9",
-        yearlyPrice: "149.9",
+        price: "189.9",
+        yearlyPrice: "189.9",
         period: "mês",
-        description: "Para negócios que precisam de uma equipe maior.",
+        description: "Para equipes grandes e negócios em crescimento.",
         buttonText: "Assinar",
-        href: "/portal?produto=totalagenda&plano=Premium",
-        features: ["Tudo do plano Profissional", "Profissionais ilimitados"],
+        href: "/portal?produto=marquo&plano=Premium",
+        features: [
+          "Profissionais ilimitados",
+          "Agenda online com link de agendamento",
+          "Clientes, fichas de anamnese e lista de espera",
+          "Comandas, caixa, produtos e estoque",
+          "Comissões, repasses e financeiro",
+          "Relatórios do negócio",
+          "Página pública e marketplace",
+          "Todas as funcionalidades em qualquer plano",
+        ],
       },
     ],
   },
